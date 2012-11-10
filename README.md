@@ -28,6 +28,7 @@ Core Components
 	- can also be managed via GUI interface
 * Authoring Interface (extensible?)
 * Admin Interface
+	- uses sockets for realtime updates (should be feasible on pretty much any server setup since there won't be that many active editors at any given time, but maybe allow it to be turned off?)
 * Signals API (registration based, emitters and responders - eg Drupal hooks or Wordpress actions) - gui for arranging response order after
 * Extensibility
 	- Themes
