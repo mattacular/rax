@@ -3,6 +3,8 @@ RAX ALPHA - (CURRENTLY IN DEVELOPMENT)
 CMS for Node.js
 ==========================================
 
+Want to help develop this project? Read about it below and if you think you're still interested, [e-mail me](mailto:mattacular@gmail.com)!
+
 Trello Board
 ------------
 https://trello.com/board/node-cms/50c363b1a538d8062a002368
