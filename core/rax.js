@@ -20,17 +20,19 @@ var cfg = {
 	'ENABLE_LOGGING': true
 }
 
+// expose globals
 Rax = module.exports = {
 	'connect': connect,
 	'router': escort,
 	'cfg': cfg,
+	'root': process.cwd(),
 	'init': init
 };
 
 // global.rax = {};
 // global.rax.cfg = cfg;
 
-function boot() {
+function boot(port) {
 	// @TODO session ?
 
 	// synchronous loading stuff
@@ -41,23 +43,20 @@ function boot() {
 
 	Rax.log('The RAX Logging method can be used like this...', [1, 2, 3], ('Check it out!').green);
 
-	Rax.logging.g('green log!');
-
-	Rax.root = process.cwd();
-	Rax.log(__filename);
 	// start server
 	Rax.server = Rax.connect.createServer();
 
 	// connect middleware
 	Rax.server.use(connect.query());
 
+	// check: use static file server?
 	if (cfg.USE_STATIC_FILESERVER) {
 		// @TODO allow usage of built-in static fileserver
 		Rax.log(('enabling static server:' + Rax.root + '/static').blue);
 		Rax.server.use(connect.static(Rax.root + '/static'));
 	}
 
-	// finally, connect router
+	// lastly, connect router
 	Rax.server.use(Rax.router(function () {
 		this.get('/test', function (req, res) {
 			Rax.log(req.query);
@@ -73,8 +72,8 @@ function boot() {
 		});
 	}));
 
-	// listen
-	Rax.server.listen(3000);
+	// listen!
+	Rax.server.listen(port);
 }
 
 function loadModules() {
@@ -112,5 +111,5 @@ function getActiveModules() {
 }
 
 function init(port, callback) {
-	boot();
+	boot(port || 3000);
 }
