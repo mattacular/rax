@@ -46,6 +46,9 @@ function boot(port) {
 	Rax.server = connect.createServer();
 
 	// connect middleware
+	// Rax.server.use(connect.vhost('local.rax', connect.createServer(function (req, res) {
+	// 	res.end('Welcome to admin interface');
+	// }).listen(8080)));
 	Rax.server.use(connect.query());
 
 	// check: use static file server?

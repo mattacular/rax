@@ -53,6 +53,8 @@ Core Components
 	- uses sockets, supports inline editing (?)
 * Admin Interface
 	- uses sockets for realtime updates (should be feasible on pretty much any server setup since there won't be that many active editors at any given time, but maybe allow it to be turned off?)
+	- http://thruflo.com/post/23226473852/websockets-varnish-nginx
+	- would require special config
 * Signals API (registration based, emitters and responders - eg Drupal hooks or Wordpress actions) - gui for arranging response order after
 * Extensibility
 	- Themes (1 or more templates in unison)
@@ -78,6 +80,18 @@ Core Components
 	- Packaging
 	- Build systems?
 	- Pre-compilation of templates
+
+Recommended Setup
+-----------------
+* Varnish in front
+	- cache layer
+	- directs websocket traffic straight to Rax running on Node server (allows for real-time editing)
+	- all other traffic to Nginx server
+* Nginx
+	- services static requests (via wildcard match) from /www/public_html
+	- proxy all other requests to Rax running on Node server
+* Rax on Node.js
+	- services all dynamic requests
 
 Folder Hierarchy
 ----------------
