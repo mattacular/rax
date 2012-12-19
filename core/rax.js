@@ -15,25 +15,36 @@ var Rax								// main app object
 ,	connections = 0
 ,	modules 						// shortcut to modules
 
+var cfg = {
+	'USE_STATIC_FILESERVER': true,
+	'ENABLE_LOGGING': true
+}
+
 Rax = module.exports = {
 	'connect': connect,
 	'router': escort,
+	'cfg': cfg,
 	'init': init
 };
 
+// global.rax = {};
+// global.rax.cfg = cfg;
+
 function boot() {
-	var cfg = { 
-		'USE_STATIC_FILESERVER': true
-	}; // @TODO load config
 	// @TODO session ?
 
 	// synchronous loading stuff
 	loadCore();		// load enabled core modules
 	loadModules();	// load enabled addon modules
 
-	Rax.post.test();
+	//Rax.post.test();
+
+	Rax.log('The RAX Logging method can be used like this...', [1, 2, 3], ('Check it out!').green);
+
+	Rax.logging.g('green log!');
+
 	Rax.root = process.cwd();
-	console.log(__filename);
+	Rax.log(__filename);
 	// start server
 	Rax.server = Rax.connect.createServer();
 
@@ -42,14 +53,14 @@ function boot() {
 
 	if (cfg.USE_STATIC_FILESERVER) {
 		// @TODO allow usage of built-in static fileserver
-		console.log(('enabling static server:' + Rax.root + '/static').blue);
+		Rax.log(('enabling static server:' + Rax.root + '/static').blue);
 		Rax.server.use(connect.static(Rax.root + '/static'));
 	}
 
 	// finally, connect router
 	Rax.server.use(Rax.router(function () {
 		this.get('/test', function (req, res) {
-			console.log(req.query);
+			Rax.log(req.query);
 			res.end('test');
 		});
 
@@ -72,10 +83,7 @@ function loadModules() {
 function loadModule(mid) {
 	module = mid + '.js';
 
-	console.log(('looking for ' + module).blue);
-
 	if (fs.existsSync('core/' + module)) {
-		console.log('found it');
 		return require('./' + module);
 	}
 
@@ -88,9 +96,6 @@ function loadCore() {
 
 	for (i = 0; i < modules.length; i += 1) {
 		module = modules[i];
-
-		console.log(('loading ' + module).green);
-
 		Rax[module] = loadModule(module);	// core modules are available at the top-level of the Rax object
 	}
 
@@ -99,11 +104,11 @@ function loadCore() {
 
 function firstResponder(req, res) {
 	connections++;
-	console.log('connection #', connections, req.url);
+	Rax.log('connection #', connections, req.url);
 }
 
 function getActiveModules() {
-	return ['post'];
+	return ['post', 'logging'];
 }
 
 function init(port, callback) {
