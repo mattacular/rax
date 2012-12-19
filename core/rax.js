@@ -9,16 +9,21 @@
  */
 var Rax								// main app object
 ,	connect = require('connect')	// libraries
+,	escort = require('escort')		// router
 ,	fs = require('fs')
 ,	colors = require('colors')
-,	connections = 0;
+,	connections = 0
+,	modules 						// shortcut to modules
 
 Rax = module.exports = {
 	'connect': connect,
+	'router': escort,
 	'init': init
 };
 
 function boot() {
+	// @TODO session ?
+
 	// synchronous loading stuff
 	loadCore();		// load enabled core modules
 	loadModules();	// load enabled addon modules
@@ -26,8 +31,25 @@ function boot() {
 	Rax.post.test();
 
 	// start server
-	Rax.connect(firstResponder)
-		.listen(3000);
+	Rax.server = Rax.connect.createServer();
+
+	// connect middleware
+	Rax.server.use(connect.query());
+
+	// finally, connect router
+	Rax.server.use(Rax.router(function () {
+		this.get('/test', function (req, res) {
+			console.log(req.query);
+			res.end('test');
+		});
+
+		this.get('/', function (req, res) {
+			res.end('Welcome to RAX.');
+		});
+	}));
+
+	// listen
+	Rax.server.listen(3000);
 }
 
 function loadModules() {
@@ -55,7 +77,7 @@ function loadCore() {
 
 		console.log(('loading ' + module).green);
 
-		Rax[module] = loadModule(module);
+		Rax[module] = loadModule(module);	// core modules are available at the top-level of the Rax object
 	}
 
 	return true;
@@ -64,7 +86,6 @@ function loadCore() {
 function firstResponder(req, res) {
 	connections++;
 	console.log('connection #', connections, req.url);
-	res.end('Hello');
 }
 
 function getActiveModules() {
