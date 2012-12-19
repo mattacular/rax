@@ -1,3 +1,3 @@
-GLOBAL.rax = require('./core/rax.js');
-rax.init();
+var rax = require('./core/rax.js').init();
+//rax.init();
 

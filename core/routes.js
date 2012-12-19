@@ -1,7 +1,9 @@
+var Rax = require('./rax');
+
 // routes map
 module.exports = function () {
 	this.get('/test', function (req, res) {
-		global.rax.log(req.query);
+		Rax.log(req.query);
 		res.end('test');
 	});
 

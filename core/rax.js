@@ -23,11 +23,9 @@ var cfg = {
 
 // expose globals
 Rax = module.exports = {
-	'connect': connect,
 	'router': escort,
 	'cfg': cfg,
-	'root': process.cwd(),
-	'init': init
+	'root': process.cwd()
 };
 
 // global.rax = {};
@@ -44,7 +42,7 @@ function boot(port) {
 	Rax.log('The RAX Logging method can be used like this...', [1, 2, 3], ('Check it out!').green);
 
 	// start server
-	Rax.server = Rax.connect.createServer();
+	Rax.server = connect.createServer();
 
 	// connect middleware
 	Rax.server.use(connect.query());

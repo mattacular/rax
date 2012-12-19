@@ -2,7 +2,7 @@
 
 Logs = module.exports = {}
 
-var Rax = global.rax;
+var Rax = require('./rax'); //global.rax;
 
 // global.rax.log = Logs.log;
 
@@ -23,8 +23,10 @@ Logs.m = function (msg) { cLog(msg, 'magenta'); }
 Logs.em = function (msg) { cLog(msg, 'bold'); }
 Logs.u = function (msg) { cLog(msg, 'underline'); }
 
-// note you can also prototype core module methods onto the top level app object this way
-Logs.log = global.rax.log = function () {
+// @experimental you can also prototype core module methods onto the top level app object this way
+// this is guaranteed by the bootstrap procedure.
+// this will not be allowed in 3rd party modules
+Logs.log = Rax.log = function () {
 	if (Rax.cfg.ENABLE_LOGGING) {
 		console.log.apply(null, arguments);
 	}
