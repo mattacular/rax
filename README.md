@@ -79,8 +79,10 @@ Core Components
 
 Folder Hierarchy
 ----------------
-> ./ 				(rax top-level)
+> ./ 			(rax top-level)
+
 > bin/			(rax CLI stuff)
+
 > core/			(core modules)
 >>	cli/		(CLI JS)
 >>	rax.js
