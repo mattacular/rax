@@ -91,10 +91,20 @@ function loadModule(mid) {
 
 function loadCore() {
 	var modules = getActiveModules()
-	,	module;
+	,	module
+	,	options
+	,	option;
 
 	for (i = 0; i < modules.length; i += 1) {
-		module = modules[i];
+		options = modules[i].split(':');
+
+		if (options.length) {
+			option = options[1];
+			module = options[0];
+		} else {
+			module = modules[i];
+		}
+		
 		Rax[module] = loadModule(module);	// core modules are available at the top-level of the Rax object
 	}
 
@@ -107,7 +117,7 @@ function firstResponder(req, res) {
 }
 
 function getActiveModules() {
-	return ['post', 'logging'];
+	return ['post', 'logging', 'routes:private'];
 }
 
 function init(port, callback) {
