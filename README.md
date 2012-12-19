@@ -3,6 +3,10 @@ RAX v0.1
 CMS for Node.js
 ==========================================
 
+Trello Board
+------------
+https://trello.com/board/node-cms/50c363b1a538d8062a002368
+
 Core Components
 ---------------
 * Router API
