@@ -84,28 +84,47 @@ Folder Hierarchy
 > bin/			(rax CLI stuff)
 
 > core/			(core modules)
+
 >>	cli/		(CLI JS)
+
 >>	rax.js
+
 >modules/		(3rd party rax modules)
+
 >>	example/		(example module to demonstrate per-module hierarchy)
+
 >>>		assets/		(optional, images/css assets used by this module)
+
 >>>		node_mod../ (optional, additional npm libraries/dependencies of this module)
+
 >>>		js/			(optional, some larger modules may want to utilize more than one *.js file)
+
 >>>>			server/		(optional, server JS)
+
 >>>>			client/		(optional, client JS)
-		main.js 	(required, can be named anything, the main JS file for this module)
-		module.json (required, must be named module.json, identifies the main JS file, similar to CommonJS modules)
-interface/		(GUI interface files)
-client/			(client files)
-	js/				(client JavaScript)
-	lib/			(client libraries)
-	css/			(defaults, if theme doesn't provide)
-themes/			(themes)
-	stock/			(stock theme)
-		js/				(theme specific JS)
-		css/			(theme specific CSS)
-		templates/		(templates)
-		theme.json 		(identifier / config)
-uploads/		(site upload storage)
-node_modules/	(app libraries)
-settings/		(various JSON configs which get replicated to DB)
+
+>>>		main.js 	(required, can be named anything, the main JS file for this module)
+
+>>>		module.json (required, must be named module.json, identifies the main JS file, similar to CommonJS modules)
+
+> interface/		(GUI interface files)
+
+> client/			(client files)
+
+>>	js/				(client JavaScript)
+>>	lib/			(client libraries)
+>>	css/			(defaults, if theme doesn't provide)
+
+> themes/			(themes)
+
+>>	stock/			(stock theme)
+>>>		js/				(theme specific JS)
+>>>		css/			(theme specific CSS)
+>>>		templates/		(templates)
+>>>		theme.json 		(identifier / config)
+
+> uploads/		(site upload storage)
+
+> node_modules/	(app libraries)
+
+> settings/		(various JSON configs which get replicated to DB)
