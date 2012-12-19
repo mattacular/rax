@@ -7,7 +7,8 @@
  *	rax.js - Rax CMS v0.0.1 Server Bootstrap
  *	created by: mstills
  */
-var Rax								// main app object
+var Rax								// main app object (public)
+,	core = {}						// internal app object (private)
 ,	connect = require('connect')	// libraries
 ,	escort = require('escort')		// router
 ,	fs = require('fs')
@@ -40,7 +41,6 @@ function boot(port) {
 	loadModules();	// load enabled addon modules
 
 	//Rax.post.test();
-
 	Rax.log('The RAX Logging method can be used like this...', [1, 2, 3], ('Check it out!').green);
 
 	// start server
@@ -56,21 +56,8 @@ function boot(port) {
 		Rax.server.use(connect.static(Rax.root + '/static'));
 	}
 
-	// lastly, connect router
-	Rax.server.use(Rax.router(function () {
-		this.get('/test', function (req, res) {
-			Rax.log(req.query);
-			res.end('test');
-		});
-
-		this.get('/', function (req, res) {
-			if (typeof req.query.secret !== 'undefined' && req.query.secret) {
-				res.end('Yay!');
-			} else {
-				res.end('Welcome to RAX.');
-			}
-		});
-	}));
+	// lastly, connect router & the routes map
+	Rax.server.use(Rax.router(core.routes));
 
 	// listen!
 	Rax.server.listen(port);
@@ -98,14 +85,19 @@ function loadCore() {
 	for (i = 0; i < modules.length; i += 1) {
 		options = modules[i].split(':');
 
-		if (options.length) {
+		if (options.length > 1) {
 			option = options[1];
 			module = options[0];
 		} else {
+			option = false;
 			module = modules[i];
 		}
-		
-		Rax[module] = loadModule(module);	// core modules are available at the top-level of the Rax object
+
+		if (option !== 'private') {
+			Rax[module] = loadModule(module);	// core modules are available at the top-level of the Rax object
+		} else {
+			core[module] = loadModule(module);
+		}
 	}
 
 	return true;
