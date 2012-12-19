@@ -4,7 +4,7 @@
  *   / ___/ __ `/ |/_/  / /   / /|_/ /\__ \ 
  *  / /  / /_/ />  <   / /___/ /  / /___/ / 
  * /_/   \__,_/_/|_|   \____/_/  /_//____/  
- *	rax.js - Rax CMS v0.0.1 Bootstrap
+ *	rax.js - Rax CMS v0.0.1 Server Bootstrap
  *	created by: mstills
  */
 var Rax								// main app object
@@ -22,6 +22,9 @@ Rax = module.exports = {
 };
 
 function boot() {
+	var cfg = { 
+		'USE_STATIC_FILESERVER': true
+	}; // @TODO load config
 	// @TODO session ?
 
 	// synchronous loading stuff
@@ -29,12 +32,19 @@ function boot() {
 	loadModules();	// load enabled addon modules
 
 	Rax.post.test();
-
+	Rax.root = process.cwd();
+	console.log(__filename);
 	// start server
 	Rax.server = Rax.connect.createServer();
 
 	// connect middleware
 	Rax.server.use(connect.query());
+
+	if (cfg.USE_STATIC_FILESERVER) {
+		// @TODO allow usage of built-in static fileserver
+		console.log(('enabling static server:' + Rax.root + '/static').blue);
+		Rax.server.use(connect.static(Rax.root + '/static'));
+	}
 
 	// finally, connect router
 	Rax.server.use(Rax.router(function () {
@@ -44,7 +54,11 @@ function boot() {
 		});
 
 		this.get('/', function (req, res) {
-			res.end('Welcome to RAX.');
+			if (typeof req.query.secret !== 'undefined' && req.query.secret) {
+				res.end('Yay!');
+			} else {
+				res.end('Welcome to RAX.');
+			}
 		});
 	}));
 
