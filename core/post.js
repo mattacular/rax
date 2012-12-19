@@ -1,5 +1,4 @@
-Posts = module.exports = {
-	'test': function () {
-		console.log('test');
-	}
-}
+// RAX Core - post.js
+// Posting Content Class
+var Posts = module.exports = {}
+,	Rax = require('./rax');

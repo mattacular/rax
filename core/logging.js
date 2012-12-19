@@ -1,8 +1,7 @@
+// RAX Core - logging.js
 // Logging Suite
-
-Logs = module.exports = {}
-
-var Rax = require('./rax'); //global.rax;
+var	Logs = module.exports = {}
+,	Rax = require('./rax');
 
 // global.rax.log = Logs.log;
 

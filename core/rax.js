@@ -23,6 +23,7 @@ var cfg = {
 
 // expose globals
 Rax = module.exports = {
+	'init': init,
 	'router': escort,
 	'cfg': cfg,
 	'root': process.cwd()
