@@ -1,4 +1,4 @@
-RAX v0.1
+RAX ALPHA - (CURRENTLY IN DEVELOPMENT)
 ========
 CMS for Node.js
 ==========================================
