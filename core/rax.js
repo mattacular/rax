@@ -51,6 +51,10 @@ function boot(port) {
 	info('Loaded core modules successfully!');
 	info('Loading addon modules...');
 	
+	Rax.beacon.on('init', function () {
+		Rax.log('init beacon!');
+	});
+
 	loadAddons();	// load enabled addon modules
 
 	// start server
@@ -83,7 +87,7 @@ function boot(port) {
 	core.server.use(Rax.router(core.routes));
 	Rax.logging.c('[Rax Bootstrap] Complete. Rax is listening on ' + port + '...');
 	// listen!
-
+	Rax.beacon.emit('init');
 	core.server.listen(port);
 }
 
@@ -165,7 +169,7 @@ function getActiveAddonModules() {
 
 // @TODO temp function
 function getActiveModules() {
-	return ['post', 'logging', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
+	return ['beacon', 'post', 'logging', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
 }
 
 function init(port, callback) {

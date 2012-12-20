@@ -106,7 +106,8 @@ Core Components
 	- uses sockets for realtime updates (should be feasible on pretty much any server setup since there won't be that many active editors at any given time, but maybe allow it to be turned off?)
 	- http://thruflo.com/post/23226473852/websockets-varnish-nginx
 	- would require special config
-* Beacon API (registration based, emitters and responders - eg Drupal hooks or Wordpress actions) - gui for arranging response order after
+* Beacon API (registration based, emitters and responders - eg Drupal hooks or Wordpress actions) - gui for arranging response order (?)
+	- Rax.pipeline is exposed, can alter response makeup, render structure etc
 * Extensibility
 	- Themes (defined by 1 or more templates)
 		+ all themes fallback on the core theme, which has bootstrap (so bootstrap is available in all themes, can be overwritten)
