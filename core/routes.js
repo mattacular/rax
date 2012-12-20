@@ -30,11 +30,9 @@ module.exports = function () {
 
 	// protected routes (ie. cannot be violated by 3rd party modules)
 	this.get('index', '/', function (req, res) {
-		if (typeof req.query.secret !== 'undefined' && req.query.secret) {
-			res.end('Yay!');
-		} else {
-			res.end('Welcome to RAX.');
-		}
+		res.writeHeader(200, {"Content-Type": "text/html"});
+		res.write(Rax.themes.render('index'));
+		res.end();
 	});
 
 	// (404) not found - the Rax router is the end of the middleware chain, so

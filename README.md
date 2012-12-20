@@ -53,9 +53,9 @@ Core Components
 	- themes are made up of 1 or more templates + 1 or more stylesheets (?)
 	- some templates are required. if active theme does not have required templates, they are inherited from the base theme?
 	- bindModel() ?
-	- stock templates: (extensible)
-		htmlHead - <head/>
-		htmlFoot - just before </body>
+	- stock templates: (extensible) ((global) = available to other templates as Handlebars helper)
+		(global) htmlHead - <head/>
+		(global) htmlFoot - just before </body>
 		contentHead - content heading to be used on most other pages (eg. heading logo, navbar etc)
 		contentFoot - content footer appears just before htmlFoot template on most other pages
 		author - author page, (eg. when user clicks byline)

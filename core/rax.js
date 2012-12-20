@@ -19,7 +19,8 @@ var Rax								// main app object (public)
 var cfg = {
 	'USE_STATIC_FILESERVER': true,
 	'ENABLE_APP_LOGGING': true,
-	'ENABLE_REQUEST_LOGGING': true
+	'ENABLE_REQUEST_LOGGING': true,
+	'ACTIVE_THEME': 'foundation'
 }
 
 // expose globals
@@ -62,6 +63,9 @@ function boot(port) {
 		Rax.log(('enabling static server:' + Rax.root + '/static').blue);
 		core.server.use(connect.static(Rax.root + '/static'));
 	}
+
+	// server theme's static files
+	core.server.use(connect.static(Rax.root + '/themes/' + cfg.ACTIVE_THEME));
 
 	// lastly, connect router & the routes map
 	core.server.use(Rax.router(core.routes));
@@ -116,7 +120,7 @@ function firstResponder(req, res) {
 }
 
 function getActiveModules() {
-	return ['post', 'logging', 'toolkit', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
+	return ['post', 'logging', 'toolkit', 'themes', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
 }
 
 function init(port, callback) {
