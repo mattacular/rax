@@ -116,7 +116,7 @@ function firstResponder(req, res) {
 }
 
 function getActiveModules() {
-	return ['post', 'logging', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
+	return ['post', 'logging', 'toolkit', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
 }
 
 function init(port, callback) {
