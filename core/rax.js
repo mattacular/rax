@@ -31,6 +31,7 @@ Rax = module.exports = {
 	'init': init,
 	'router': escort,
 	'cfg': cfg,
+	'modules': {},	// addon module store
 	'root': process.cwd()
 };
 
@@ -41,7 +42,7 @@ function boot(port) {
 	if (cfg.ENABLE_APP_LOGGING) {
 		console.log(('[Rax Bootstrap] Loading core...').cyan);
 	}
-	
+
 	loadCore();		// load enabled core modules
 
 	info = Rax.logging.info;

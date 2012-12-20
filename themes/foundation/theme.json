@@ -4,9 +4,10 @@
 	"description": "RAX Foundation theme (ie. the stock experience), supported by Bootstrap",
 	"version": "0.0.1",
 	"engine": "Handlebars",
-	"templates": [
-		"hero"
-	],
+	"templates": {
+		"hero": true,
+		"module_template": "/modules/glados/testing.handlebars"	
+	},
 	"variables": {
 		"raxVersion": "0.0.1",
 		"bootstrapJS": "/assets/js/bootstrap.js"

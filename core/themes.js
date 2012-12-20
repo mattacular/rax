@@ -18,7 +18,7 @@ loadTheme = Themes.loadTheme = function (theme) {
 				'path': '/themes/foundation/htmlHead.handlebars'
 			}
 		}, 
-		index, themeCfg, i;
+		index, themeCfg, parentModule, moduleTemplate, moduleVars, pieces, i;
 
 
 	theme = theme || Rax.cfg.ACTIVE_THEME;
@@ -29,24 +29,48 @@ loadTheme = Themes.loadTheme = function (theme) {
 	Rax.logging.g('Loading active theme "' + theme.name + '"');
 	
 	// add any custom templates defined in the theme config to the templates manifest
-	for (i = 0; i < themeCfg.templates.length; i += 1) {
-		templates[themeCfg.templates[i]] = { 'path': '/themes/foundation/' + themeCfg.templates[i] + '.handlebars' };
-	}
+	_.each(themeCfg.templates, function (path, name) {
+		// if no path is explicitly defined, assume the template resides in the base theme dir
+		templates[name] = (typeof path !== 'string') ? { 'path': '/themes/foundation/' + name + '.handlebars' } : { 'path': path };
+	});
 
 	// compile top-level templates (aka pages)
 	index = fs.readFileSync(Rax.root + '/themes/foundation/index.handlebars', 'utf8');
 	index = Handlebars.compile(index);
 
 	// register all templates as Handlebars helpers
-	_.each(templates, function (glob, template) {
-		Rax.logging.g('Registering theme template "' + template + '" (' + glob.path + ')');
-		glob.content = fs.readFileSync(Rax.root + glob.path, 'utf8');
+	_.each(templates, function (template, name) {
+		if (template.path.match(/\/modules\//gi)) {
+			Rax.logging.r('Skipping addon module template @TODO');
+			return true;
+		}
+		Rax.logging.g('Registering theme template "' + name + '" (' + template.path + ')');
+		// read in and compile each template
+		template.content = fs.readFileSync(Rax.root + template.path, 'utf8');
+		template.content = Handlebars.compile(template.content);
 
-		glob.content = Handlebars.compile(glob.content);
+		// if module template, compile against module source
+		if (template.path.match(/\/modules\//)) {
+			// @TODO replace with a regex cap...
+			pieces = name.split('/');
+			parentModule = pieces[2];
+			moduleTemplate = pieces[(pieces.length - 1)].replace(/\.handlebars/, '');
 
-		Handlebars.registerHelper(template, function () {
-			return glob.content(themeCfg.variables);
-		});
+			// ensure that module is enabled otherwise it needs to be enabled
+			if (Rax.isDef(Rax.modules, [parentModule, 'variables', moduleTemplate])) {
+				moduleVars = Rax.modules[parentModule].variables;
+			} else {
+				moduleVars = themeCfg.variables;
+			}
+
+			Handlebars.registerHelper(name, function () {
+				return template.content(moduleVars);
+			});
+		} else {
+			Handlebars.registerHelper(name, function () {
+				return template.content(themeCfg.variables);
+			});
+		}
 	});
 
 	// return compiled templates
