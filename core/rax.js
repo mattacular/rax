@@ -21,7 +21,7 @@ var Rax,							// main app object (public)
 
 // expose core public methods and properties
 Rax = module.exports = {
-	'init': init,
+	'start': start,
 	'router': escort,
 	'cfg': {},
 	'modules': {},	// addon module store
@@ -31,10 +31,12 @@ Rax = module.exports = {
 // set an absolute reference to Rax core so other modules can require() it easily
 global.raxCore = Rax.root + '/core/rax.js';
 
-function loadDb() {
+function start() {
+	// load base modules (beacon API and database API)
 	Rax.beacon = loadModule('beacon');
 	Rax.db = loadModule('database/mongo');
 
+	// as soon as Rax config has been loaded from DB, start main bootstrap
 	Rax.beacon.once('dbHasConfig', function () {
 		cfg = Rax.cfg;
 		boot(3000);
@@ -43,7 +45,6 @@ function loadDb() {
 
 function boot(port) {
 	loadCore();		// load enabled core modules
-
 	Rax.beacon.emit('coreLoaded');
 
 	// shortcuts for boot messaging
@@ -51,24 +52,21 @@ function boot(port) {
 	warn = Rax.logging.warn;
 	error = Rax.logging.error;
 
+	Rax.log(('[Rax] Core modules loaded.').cyan);
 	Rax.log(('[Rax] Booting...').cyan);
 
 	info('Loading addon modules...');
-	
 	loadAddons();	// load enabled addon modules
-
 	Rax.beacon.emit('addonsLoaded');
 
-	info('Starting server...');
 	// start server
+	info('Starting server...');
 	core.server = connect.createServer();
 
 	// connect middleware
 	core.server.use(connect.favicon());
-	// core.server.use(connect.vhost('local.rax', connect.createServer(function (req, res) {
-	// 	res.end('Welcome to admin interface');
-	// }).listen(8080)));
 	core.server.use(connect.query());
+
 	// @TODO session middleware for Rax (probably needs to be custom but maybe not)
 	// @TODO user middleware for Rax (custom)
 
@@ -88,10 +86,13 @@ function boot(port) {
 
 	// lastly, connect router & the routes map
 	core.server.use(Rax.router(core.routes));
-	Rax.logging.c('[Rax] Booting complete. Rax is listening on ' + port + '...');
+
 	// listen!
 	core.server.listen(port);
-	Rax.beacon.emit('init');	// bootstrap complete, safe for other modules to init
+
+	// bootstrap complete, safe for other modules to init
+	Rax.beacon.emit('init');
+	Rax.logging.c('[Rax] Booting complete. Rax is listening on ' + port + '...');
 }
 
 function loadModule(mid, type) {
@@ -176,16 +177,7 @@ function getActiveAddonModules() {
 	return ['glados'];
 }
 
-function getActiveDb() {
-	return 'database/mongo:alias=db';
-}
-
 // @TODO temp function
 function getActiveModules() {
 	return ['logging', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
-}
-
-function init(port, callback) {
-	loadDb();
-	//boot(port || 3000);
 }
