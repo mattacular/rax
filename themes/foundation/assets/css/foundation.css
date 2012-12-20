@@ -1,3 +1,8 @@
 body {
-	background-color: #C0C0C0;
+	background-image: url('../img/navy_blue.png');
+	margin: 1em;
+}
+
+.sans-serif {
+	font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
 }

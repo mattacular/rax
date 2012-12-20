@@ -65,7 +65,7 @@ function boot(port) {
 	}
 
 	// serve theme's static files
-	core.server.use(connect.static(Rax.root + '/themes/' + cfg.ACTIVE_THEME));
+	core.server.use(connect.static(Rax.root + '/themes/' + cfg.ACTIVE_THEME, { maxAge: 1000 }));
 
 	// lastly, connect router & the routes map
 	core.server.use(Rax.router(core.routes));
