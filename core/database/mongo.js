@@ -15,7 +15,8 @@ Rax.beacon.once('dbLive', function () {
 		'USE_STATIC_FILESERVER': Boolean,
 		'ENABLE_APP_LOGGING': Boolean,
 		'ENABLE_REQUEST_LOGGING': Boolean,
-		'ACTIVE_THEME': String
+		'ACTIVE_THEME': String,
+		'PORT': Number
 	});
 
 	var cfg = mongoose.model('Config', cfgSchema);
@@ -28,6 +29,7 @@ Rax.beacon.once('dbLive', function () {
 				'USE_STATIC_FILESERVER': true,
 				'ENABLE_APP_LOGGING': true,
 				'ENABLE_REQUEST_LOGGING': true,
+				'PORT': 3000,
 				'ACTIVE_THEME': 'foundation'
 			});
 
@@ -35,7 +37,6 @@ Rax.beacon.once('dbLive', function () {
 				Rax.log('done saving cfg default');
 			});
 		} else {
-			delete instance._id;
 			Rax.cfg = instance;
 		}
 

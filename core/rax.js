@@ -39,7 +39,7 @@ function start() {
 	// as soon as Rax config has been loaded from DB, start main bootstrap
 	Rax.beacon.once('dbHasConfig', function () {
 		cfg = Rax.cfg;
-		boot(3000);
+		boot(cfg.PORT);	// load rest of core and boot server
 	});
 }
 
