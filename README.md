@@ -18,11 +18,11 @@ Core Components
 	- modules can provide forms to templates
 	- utilizes Handlebars helpers (?)
 
-	`//Begin example:
+	`//Begin example:`
 
-	page = {
+	`page = {`
 
-		'uploadPicture': {
+		`'uploadPicture': {`
 
 			'prefix': '<div class="site-upload-picture-form">',
 
