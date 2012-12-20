@@ -1,0 +1,14 @@
+{
+	"theme": "Foundation",
+	"author": "mattacular",
+	"description": "RAX Foundation theme (ie. the stock experience), supported by Bootstrap",
+	"version": "0.0.1",
+	"engine": "Handlebars",
+	"templates": [
+		"hero"
+	],
+	"variables": {
+		"raxVersion": "0.0.1",
+		"bootstrapJS": "/assets/js/bootstrap.js"
+	}
+}
