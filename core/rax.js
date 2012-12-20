@@ -64,7 +64,7 @@ function boot(port) {
 		core.server.use(connect.static(Rax.root + '/static'));
 	}
 
-	// server theme's static files
+	// serve theme's static files
 	core.server.use(connect.static(Rax.root + '/themes/' + cfg.ACTIVE_THEME));
 
 	// lastly, connect router & the routes map
