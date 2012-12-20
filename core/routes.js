@@ -33,7 +33,7 @@ routes = function () {
 	// protected routes (ie. cannot be violated by 3rd party modules)
 	this.get('index', '/', function (req, res) {
 		res.writeHeader(200, {"Content-Type": "text/html"});
-		res.write(Rax.themes.render('index'));
+		res.write(Rax.theme.render('index'));
 		res.end();
 	});
 

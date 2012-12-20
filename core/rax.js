@@ -26,7 +26,7 @@ cfg = {
 	'ACTIVE_THEME': 'foundation'
 };
 
-// expose globals
+// expose core public methods and properties
 Rax = module.exports = {
 	'init': init,
 	'router': escort,
@@ -35,24 +35,23 @@ Rax = module.exports = {
 	'root': process.cwd()
 };
 
-// global.rax = {};
-// global.rax.cfg = cfg;
+// set an absolute reference to Rax core so other modules can require() it easily
+global.raxCore = Rax.root + '/core/rax.js';
 
 function boot(port) {
 	if (cfg.ENABLE_APP_LOGGING) {
 		console.log(('[Rax Bootstrap] Loading core...').cyan);
 	}
-
+	
 	loadCore();		// load enabled core modules
 
 	info = Rax.logging.info;
 	warn = Rax.logging.warn;
 	error = Rax.logging.error;
-	
 	info('Loaded core modules successfully!');
 	info('Loading addon modules...');
-
-	loadModules();	// load enabled addon modules
+	
+	loadAddons();	// load enabled addon modules
 
 	// start server
 	core.server = connect.createServer();
@@ -84,22 +83,26 @@ function boot(port) {
 	core.server.use(Rax.router(core.routes));
 	Rax.logging.c('[Rax Bootstrap] Complete. Rax is listening on ' + port + '...');
 	// listen!
+
 	core.server.listen(port);
 }
 
-function loadModules() {
-}
-
-function loadModule(mid) {
+function loadModule(mid, type) {
 	var module = mid + '.js';
 
-	if (fs.existsSync('core/' + module)) {
-		return require('./' + module);
+	type = (typeof type !== 'undefined' && type === 'addon') ? 'modules' : 'core';
+
+	if (fs.existsSync(type + '/' + module)) {
+		return (type === 'core') ? require('./' + module) : require('../modules/' + module);
 	}
 
 	return false;
 }
 
+/**
+ *	loadCore()
+ *		Load core modules
+ */
 function loadCore() {
 	var modules = getActiveModules(),
 		module, options, option, i;
@@ -125,8 +128,44 @@ function loadCore() {
 	return true;
 }
 
+/**
+ *	loadAddons()
+ *		Load addon (3rd party) modules
+ */
+function loadAddons() {
+	var modules = getActiveAddonModules(),
+		module, options, option, i;
+
+	for (i = 0; i < modules.length; i += 1) {
+		options = modules[i].split(':');
+
+		if (options.length > 1) {
+			module = options.shift();
+		} else {
+			module = options[0];
+		}
+
+		if (options.indexOf('private') !== -1) {
+			if (typeof core.modules !== 'object') {
+				core.modules = {};
+			}
+			core.modules[module] = loadModule(module + '/' + module, 'addon');
+		} else {
+			Rax.log('loading addon module...', module);
+			Rax.modules[module] = loadModule(module + '/' + module, 'addon');
+		}
+	}
+
+}
+
+// @TODO temp function
+function getActiveAddonModules() {
+	return ['glados'];
+}
+
+// @TODO temp function
 function getActiveModules() {
-	return ['post', 'logging', 'toolkit', 'themes', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
+	return ['post', 'logging', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
 }
 
 function init(port, callback) {
