@@ -18,7 +18,8 @@ Core Components
 	- modules can provide forms to templates
 	- utilizes Handlebars helpers (?)
 
-	`page = {
+	`
+	page = {
 
 		'uploadPicture': {
 
@@ -42,7 +43,8 @@ Core Components
 
 		}
 
-	}`
+	}
+	`
 
 	- can be exposed to templates/themes - {{uploadPicture}}
 
