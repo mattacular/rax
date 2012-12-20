@@ -19,17 +19,29 @@ Core Components
 	- utilizes Handlebars helpers (?)
 
 	`page = {
+
 		'uploadPicture': {
+
 			'prefix': '<div class="site-upload-picture-form">',
+
 			'suffix': '</div>',
+
 			'submit': '/photos/upload'	// takes a route or routeId
+
 			'structure': {
+
 				'picture_description': {
+
 					'type': 'textfield',
+
 					'title': 'Description'
+
 				}
+
 			}
+
 		}
+
 	}`
 
 	- can be exposed to templates/themes - {{uploadPicture}}
