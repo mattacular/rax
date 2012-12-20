@@ -9,7 +9,7 @@
  */
 var Rax								// main app object (public)
 ,	core = {}						// internal app object (private)
-,	connect = require('connect')	// libraries
+,	connect = require('connect')	// middleware
 ,	escort = require('escort')		// router
 ,	fs = require('fs')
 ,	colors = require('colors')
@@ -34,23 +34,23 @@ Rax = module.exports = {
 // global.rax.cfg = cfg;
 
 function boot(port) {
-	// @TODO session ?
-
 	// synchronous loading stuff
 	loadCore();		// load enabled core modules
 	loadModules();	// load enabled addon modules
 
-	//Rax.post.test();
 	Rax.log('The RAX Logging method can be used like this...', [1, 2, 3], ('Check it out!').green);
 
 	// start server
 	core.server = connect.createServer();
 
 	// connect middleware
+	core.server.use(connect.favicon());
 	// core.server.use(connect.vhost('local.rax', connect.createServer(function (req, res) {
 	// 	res.end('Welcome to admin interface');
 	// }).listen(8080)));
 	core.server.use(connect.query());
+	// @TODO session middleware for Rax (probably needs to be custom but maybe not)
+	// @TODO user middleware for Rax (custom)
 
 	if (cfg.ENABLE_REQUEST_LOGGING) {
 		core.server.use(connect.logger());
