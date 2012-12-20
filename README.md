@@ -56,8 +56,8 @@ Core Components
 	- stock templates: (extensible) ((global) = available to other templates as Handlebars helper)
 		(global) htmlHead - <head/>
 		(global) htmlFoot - just before </body>
-		contentHead - content heading to be used on most other pages (eg. heading logo, navbar etc)
-		contentFoot - content footer appears just before htmlFoot template on most other pages
+		(global) contentHead - content heading to be used on most other pages (eg. heading logo, navbar etc)
+		(global) contentFoot - content footer appears just before htmlFoot template on most other pages
 		author - author page, (eg. when user clicks byline)
 		article - article page
 		content-{content_type}
@@ -66,6 +66,8 @@ Core Components
 		list - template for various list type pages that index articles (eg. search results, archives, list by category)
 		homepage - front page / index
 		dash_post - dashboard - post an article
+
+		themes and modules can both provide custom templates (and global templates) at will
 * Content Types/Models API (kind of like entities? maybe rename to something less generic)
 	- ???
 	- supported base types:

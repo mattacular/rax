@@ -1,8 +1,10 @@
-var Rax = require('./rax')
-,	_ = require('underscore')
+/*jslint nomen: true, sloppy: true, devel: false, browser: true, maxerr: 50, indent: 4, white: true*/
+/*global module: false, require: false, console: false, clearInterval: false, clearTimeout: false, setInterval: false, setTimeout: false */
+var Rax = require('./rax'),
+	_ = require('underscore'),
+	routes, enableRoutes;
 
-// routes map
-module.exports = function () {
+routes = function () {
 	var self = this,
 		map = {};
 
@@ -44,7 +46,7 @@ module.exports = function () {
 	});
 };
 
-function enableRoutes(routes) {
+enableRoutes = function (routes) {
 	var self = this,
 		acceptedActions = [
 			'get',
@@ -95,4 +97,7 @@ function enableRoutes(routes) {
 			Rax.log('route rejected', route);
 		}
 	});
-}
+};
+
+// expose routes map
+module.exports = routes;

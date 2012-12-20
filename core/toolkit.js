@@ -1,6 +1,8 @@
+/*jslint nomen: true, sloppy: true, devel: false, browser: true, maxerr: 50, indent: 4, white: true*/
+/*global module: false, require: false, console: false, clearInterval: false, clearTimeout: false, setInterval: false, setTimeout: false */
 // RAX Toolkit Functions - toolkit.js
-var	Toolkit = module.exports = {}
-,	Rax = require('./rax');
+var	Toolkit = module.exports = {},
+	Rax = require('./rax');
 
 /**
  *  isDef()

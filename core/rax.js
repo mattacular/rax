@@ -1,3 +1,5 @@
+/*jslint nomen: true, sloppy: true, devel: false, browser: true, maxerr: 50, indent: 4, white: true*/
+/*global module: false, process: false, require: false, console: false, clearInterval: false, clearTimeout: false, setInterval: false, setTimeout: false */
 /**
  *                        ________  ________
  *    _________ __  __   / ____/  |/  / ___/
@@ -7,21 +9,21 @@
  *	rax.js - Rax CMS v0.0.1 Server Bootstrap
  *	created by: mstills
  */
-var Rax								// main app object (public)
-,	core = {}						// internal app object (private)
-,	connect = require('connect')	// middleware
-,	escort = require('escort')		// router
-,	fs = require('fs')
-,	colors = require('colors')
-,	connections = 0
-,	modules 						// shortcut to modules
+var Rax,							// main app object (public)
+	core = {},						// internal app object (private)
+	connect = require('connect'),	// middleware
+	escort = require('escort'),		// router
+	fs = require('fs'),
+	colors = require('colors'),
+	connections = 0,
+	modules, cfg;
 
-var cfg = {
+cfg = {
 	'USE_STATIC_FILESERVER': true,
 	'ENABLE_APP_LOGGING': true,
 	'ENABLE_REQUEST_LOGGING': true,
 	'ACTIVE_THEME': 'foundation'
-}
+};
 
 // expose globals
 Rax = module.exports = {
@@ -78,7 +80,7 @@ function loadModules() {
 }
 
 function loadModule(mid) {
-	module = mid + '.js';
+	var module = mid + '.js';
 
 	if (fs.existsSync('core/' + module)) {
 		return require('./' + module);
@@ -88,10 +90,8 @@ function loadModule(mid) {
 }
 
 function loadCore() {
-	var modules = getActiveModules()
-	,	module
-	,	options
-	,	option;
+	var modules = getActiveModules(),
+		module, options, option, i;
 
 	for (i = 0; i < modules.length; i += 1) {
 		options = modules[i].split(':');
@@ -112,11 +112,6 @@ function loadCore() {
 	}
 
 	return true;
-}
-
-function firstResponder(req, res) {
-	connections++;
-	Rax.log('connection #', connections, req.url);
 }
 
 function getActiveModules() {
