@@ -56,7 +56,7 @@ function boot(port) {
 	});
 
 	loadAddons();	// load enabled addon modules
-
+	Rax.db.identify();
 	// start server
 	core.server = connect.createServer();
 
@@ -115,17 +115,23 @@ function loadCore() {
 		options = modules[i].split(':');
 
 		if (options.length > 1) {
-			option = options[1];
-			module = options[0];
+			module = options.shift();
 		} else {
-			option = false;
-			module = modules[i];
+			module = options[0];
+			options = false;
 		}
 
-		if (option !== 'private') {
-			Rax[module] = loadModule(module);	// core modules are available at the top-level of the Rax object
-		} else {
+		if (module.indexOf('/') !== -1) {
+			if (!options || options[0].indexOf('alias') === -1) {
+				continue; // complex requirements must provide an alias for themselves
+			}
+
+			alias = options[0].split('=')[1];
+			Rax[alias] = loadModule(module);
+		} else if (options && options[0].indexOf('private') !== -1) {
 			core[module] = loadModule(module);
+		} else {
+			Rax[module] = loadModule(module);	// core modules are available at the top-level of the Rax object
 		}
 	}
 
@@ -149,7 +155,7 @@ function loadAddons() {
 			module = options[0];
 		}
 
-		if (options.indexOf('private') !== -1) {
+		if (options[0].indexOf('private') !== -1) {
 			if (typeof core.modules !== 'object') {
 				core.modules = {};
 			}
@@ -169,7 +175,7 @@ function getActiveAddonModules() {
 
 // @TODO temp function
 function getActiveModules() {
-	return ['beacon', 'post', 'logging', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
+	return ['logging', 'database/mongo:alias=db', 'beacon', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
 }
 
 function init(port, callback) {
