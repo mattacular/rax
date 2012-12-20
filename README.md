@@ -15,11 +15,44 @@ Core Components
 	- app-safe wrapper for Escort (https://github.com/ckknight/escort)
 * Forms API
 	- custom
+	- modules can provide forms to templates
+	- utilizes Handlebars helpers (?)
+
+	`page = {
+		'uploadPicture': {
+			'prefix': '<div class="site-upload-picture-form">',
+			'suffix': '</div>',
+			'submit': '/photos/upload'	// takes a route or routeId
+			'structure': {
+				'picture_description': {
+					'type': 'textfield',
+					'title': 'Description'
+				}
+			}
+		}
+	}`
+
+	- can be exposed to templates/themes - {{uploadPicture}}
+
 * Templating API
 	- utilizes Handlebars (HTML) and LESS (CSS) (maybe allow extensibility here in the future?)
 	- 'blocks' system defineBlock() putBlock()
 	- themes are made up of 1 or more templates + 1 or more stylesheets (?)
+	- some templates are required. if active theme does not have required templates, they are inherited from the base theme?
 	- bindModel() ?
+	- stock templates: (extensible)
+		htmlHead - <head/>
+		htmlFoot - just before </body>
+		contentHead - content heading to be used on most other pages (eg. heading logo, navbar etc)
+		contentFoot - content footer appears just before htmlFoot template on most other pages
+		author - author page, (eg. when user clicks byline)
+		article - article page
+		content-{content_type}
+		gallery 
+		section - section front page (only used if sections are enabled)
+		list - template for various list type pages that index articles (eg. search results, archives, list by category)
+		homepage - front page / index
+		dash_post - dashboard - post an article
 * Content Types/Models API (kind of like entities? maybe rename to something less generic)
 	- ???
 	- supported base types:
@@ -33,7 +66,8 @@ Core Components
 	- Post (provides a highly configurable post content-type, Rax.posts.addType('article', fields) or Rax.posts.addType('blog', fields))
 	- Comment (allows user commenting to be enabled on existing content types)
 	- Section (define sections to organize content-types, can be broad or very explicitly define - eg. a section could be all blog posts, or all blog posts of a certain type, or all blogs posts by a certain author)
-	- Gallery (similar to sections, except requires that the content-type to be image)
+	- Categories (tag posts by category to help search and generate list pages)
+	- Gallery (similar to sections, except requires the content-type to be image)
 	- User
 	- Cron
 	- Sitemap
@@ -57,12 +91,12 @@ Core Components
 	- would require special config
 * Beacon API (registration based, emitters and responders - eg Drupal hooks or Wordpress actions) - gui for arranging response order after
 * Extensibility
-	- Themes (1 or more templates in unison)
+	- Themes (defined by 1 or more templates)
 		+ all themes fallback on the core theme, which has bootstrap (so bootstrap is available in all themes, can be overwritten)
 		+ pushes users to adopt responsive design practices
 		+ also supports device-specific themes
-		+ can be as simple as Wordpress, or as complicated as Drupal, falls back down onto
-		core defaults when necessary
+		+ can be as simple as Wordpress, or as complicated as Drupal, falls back down onto core defaults when necessary
+		+ child themes?
 	- RAX Modules
 		? modules can be as simple as providing a content-type through the Models API, or as advanced as the author likes (can essentially use Rax as a framework like you can with Drupal to make any kind of site you want)
 		* adopt the GameFlash module pattern
