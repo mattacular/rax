@@ -21,7 +21,6 @@ loadTheme = Theme.loadTheme = function (theme) {
 		}, 
 		index, themeCfg, parentModule, moduleTemplate, moduleVars, pieces, i;
 
-
 	theme = theme || Rax.cfg.ACTIVE_THEME;
 
 	// get theme config
@@ -110,8 +109,9 @@ loadCfg = function (theme) {
 	return JSON.parse(raw);
 };
 
-// @TODO move to 'boot' beacon
-Rax.view = loadTheme();	// load the active theme as soon as this module is enabled
+Rax.beacon.once('coreLoaded', function () {
+	Rax.view = loadTheme();	// load the active theme as soon as this module is enabled
+});
 
 Theme.render = function () {
 	var model;

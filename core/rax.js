@@ -19,18 +19,11 @@ var Rax,							// main app object (public)
 	modules, cfg,
 	warn, error, info;
 
-cfg = {
-	'USE_STATIC_FILESERVER': true,
-	'ENABLE_APP_LOGGING': true,
-	'ENABLE_REQUEST_LOGGING': true,
-	'ACTIVE_THEME': 'foundation'
-};
-
 // expose core public methods and properties
 Rax = module.exports = {
 	'init': init,
 	'router': escort,
-	'cfg': cfg,
+	'cfg': {},
 	'modules': {},	// addon module store
 	'root': process.cwd()
 };
@@ -38,25 +31,35 @@ Rax = module.exports = {
 // set an absolute reference to Rax core so other modules can require() it easily
 global.raxCore = Rax.root + '/core/rax.js';
 
+function loadDb() {
+	Rax.beacon = loadModule('beacon');
+	Rax.db = loadModule('database/mongo');
+
+	Rax.beacon.once('dbHasConfig', function () {
+		cfg = Rax.cfg;
+		boot(3000);
+	});
+}
+
 function boot(port) {
-	if (cfg.ENABLE_APP_LOGGING) {
-		console.log(('[Rax Bootstrap] Loading core...').cyan);
-	}
-	
 	loadCore();		// load enabled core modules
 
+	Rax.beacon.emit('coreLoaded');
+
+	// shortcuts for boot messaging
 	info = Rax.logging.info;
 	warn = Rax.logging.warn;
 	error = Rax.logging.error;
-	info('Loaded core modules successfully!');
+
+	Rax.log(('[Rax] Booting...').cyan);
+
 	info('Loading addon modules...');
 	
-	Rax.beacon.on('init', function () {
-		Rax.log('init beacon!');
-	});
-
 	loadAddons();	// load enabled addon modules
-	Rax.db.identify();
+
+	Rax.beacon.emit('addonsLoaded');
+
+	info('Starting server...');
 	// start server
 	core.server = connect.createServer();
 
@@ -85,10 +88,10 @@ function boot(port) {
 
 	// lastly, connect router & the routes map
 	core.server.use(Rax.router(core.routes));
-	Rax.logging.c('[Rax Bootstrap] Complete. Rax is listening on ' + port + '...');
+	Rax.logging.c('[Rax] Booting complete. Rax is listening on ' + port + '...');
 	// listen!
-	Rax.beacon.emit('init');
 	core.server.listen(port);
+	Rax.beacon.emit('init');	// bootstrap complete, safe for other modules to init
 }
 
 function loadModule(mid, type) {
@@ -173,11 +176,16 @@ function getActiveAddonModules() {
 	return ['glados'];
 }
 
+function getActiveDb() {
+	return 'database/mongo:alias=db';
+}
+
 // @TODO temp function
 function getActiveModules() {
-	return ['logging', 'database/mongo:alias=db', 'beacon', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
+	return ['logging', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
 }
 
 function init(port, callback) {
-	boot(port || 3000);
+	loadDb();
+	//boot(port || 3000);
 }

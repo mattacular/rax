@@ -10,6 +10,10 @@ Beacon.on = function (event, callback) {
 	emitter.on('rax:' + event, callback);
 };
 
+Beacon.once = function (event, callback) {
+	emitter.once('rax:' + event, callback);
+};
+
 Beacon.emit = function (event) {
 	emitter.emit('rax:' + event);
 }
