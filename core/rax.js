@@ -16,7 +16,8 @@ var Rax,							// main app object (public)
 	fs = require('fs'),
 	colors = require('colors'),
 	connections = 0,
-	modules, cfg;
+	modules, cfg,
+	warn, error, info;
 
 cfg = {
 	'USE_STATIC_FILESERVER': true,
@@ -37,11 +38,20 @@ Rax = module.exports = {
 // global.rax.cfg = cfg;
 
 function boot(port) {
-	// synchronous loading stuff
+	if (cfg.ENABLE_APP_LOGGING) {
+		console.log(('[Rax Bootstrap] Loading core...').cyan);
+	}
+	
 	loadCore();		// load enabled core modules
-	loadModules();	// load enabled addon modules
 
-	Rax.log('The RAX Logging method can be used like this...', [1, 2, 3], ('Check it out!').green);
+	info = Rax.logging.info;
+	warn = Rax.logging.warn;
+	error = Rax.logging.error;
+	
+	info('Loaded core modules successfully!');
+	info('Loading addon modules...');
+
+	loadModules();	// load enabled addon modules
 
 	// start server
 	core.server = connect.createServer();
@@ -62,7 +72,7 @@ function boot(port) {
 	// check: use static file server?
 	if (cfg.USE_STATIC_FILESERVER) {
 		// @TODO allow usage of built-in static fileserver
-		Rax.log(('enabling static server:' + Rax.root + '/static').blue);
+		info('Enabling static server @ ' + Rax.root + '/static');
 		core.server.use(connect.static(Rax.root + '/static'));
 	}
 
@@ -71,7 +81,7 @@ function boot(port) {
 
 	// lastly, connect router & the routes map
 	core.server.use(Rax.router(core.routes));
-
+	Rax.logging.c('[Rax Bootstrap] Complete. Rax is listening on ' + port + '...');
 	// listen!
 	core.server.listen(port);
 }

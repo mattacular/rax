@@ -13,11 +13,11 @@ function cLog(msg, color) {
 
 // color logging shortcuts
 Logs.g = function (msg) { cLog(msg, 'green'); };
-Logs.r = function (msg) { cLog(msg, 'red'); };
-Logs.y = function (msg) { cLog(msg, 'yellow'); };
+Logs.r = Logs.error = function (msg) { cLog(msg, 'red'); };
+Logs.y = Logs.warn = function (msg) { cLog(msg, 'yellow'); };
 Logs.c = function (msg) { cLog(msg, 'cyan'); };
 Logs.w = function (msg) { cLog(msg, 'white'); };
-Logs.b = function (msg) { cLog(msg, 'blue'); };
+Logs.b = Logs.info = function (msg) { cLog(msg, 'blue'); };
 Logs.m = function (msg) { cLog(msg, 'magenta'); };
 Logs.em = function (msg) { cLog(msg, 'bold'); };
 Logs.u = function (msg) { cLog(msg, 'underline'); };

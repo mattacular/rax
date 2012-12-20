@@ -20,10 +20,13 @@ loadTheme = Themes.loadTheme = function (theme) {
 		}, 
 		index, themeCfg, i;
 
+
 	theme = theme || Rax.cfg.ACTIVE_THEME;
 
 	// get theme config
 	themeCfg = loadCfg();
+
+	Rax.logging.g('Loading active theme "' + theme.name + '"');
 	
 	// add any custom templates defined in the theme config to the templates manifest
 	for (i = 0; i < themeCfg.templates.length; i += 1) {
@@ -36,7 +39,7 @@ loadTheme = Themes.loadTheme = function (theme) {
 
 	// register all templates as Handlebars helpers
 	_.each(templates, function (glob, template) {
-		Rax.log('register', glob.path, template);
+		Rax.logging.g('Registering theme template "' + template + '" (' + glob.path + ')');
 		glob.content = fs.readFileSync(Rax.root + glob.path, 'utf8');
 
 		glob.content = Handlebars.compile(glob.content);
