@@ -43,26 +43,26 @@ function boot(port) {
 	Rax.log('The RAX Logging method can be used like this...', [1, 2, 3], ('Check it out!').green);
 
 	// start server
-	Rax.server = connect.createServer();
+	core.server = connect.createServer();
 
 	// connect middleware
-	// Rax.server.use(connect.vhost('local.rax', connect.createServer(function (req, res) {
+	// core.server.use(connect.vhost('local.rax', connect.createServer(function (req, res) {
 	// 	res.end('Welcome to admin interface');
 	// }).listen(8080)));
-	Rax.server.use(connect.query());
+	core.server.use(connect.query());
 
 	// check: use static file server?
 	if (cfg.USE_STATIC_FILESERVER) {
 		// @TODO allow usage of built-in static fileserver
 		Rax.log(('enabling static server:' + Rax.root + '/static').blue);
-		Rax.server.use(connect.static(Rax.root + '/static'));
+		core.server.use(connect.static(Rax.root + '/static'));
 	}
 
 	// lastly, connect router & the routes map
-	Rax.server.use(Rax.router(core.routes));
+	core.server.use(Rax.router(core.routes));
 
 	// listen!
-	Rax.server.listen(port);
+	core.server.listen(port);
 }
 
 function loadModules() {
