@@ -55,7 +55,7 @@ Core Components
 	- uses sockets for realtime updates (should be feasible on pretty much any server setup since there won't be that many active editors at any given time, but maybe allow it to be turned off?)
 	- http://thruflo.com/post/23226473852/websockets-varnish-nginx
 	- would require special config
-* Signals API (registration based, emitters and responders - eg Drupal hooks or Wordpress actions) - gui for arranging response order after
+* Beacon API (registration based, emitters and responders - eg Drupal hooks or Wordpress actions) - gui for arranging response order after
 * Extensibility
 	- Themes (1 or more templates in unison)
 		+ all themes fallback on the core theme, which has bootstrap (so bootstrap is available in all themes, can be overwritten)
@@ -92,6 +92,45 @@ Recommended Setup
 	- proxy all other requests to Rax running on Node server
 * Rax on Node.js
 	- services all dynamic requests
+
+Can also be done with just Node though using the Rax static file server option!
+
+3rd Party Module Spec (Rax Modules)
+---------------------
+Probably not going to allow install with npm. No need to clog up the npm registry with modules specific to what is technically another module (Rax) when
+it is perfectly easy to run a git clone in your installation's '/modules' directory. Module developers would still be encouraged to supply a 'package.json'
+for installing any npm dependencies it utilizes.
+
+For Rax though, 3rd party modules must be identified by a "module.json" file.
+
+{
+	'title': 'Cool Module',
+	'description': 'A cool module',
+	'git': 'https://...'	// please host your modules on github so they can be updated through the admin interface!
+	'version': '0.0.1'
+	'requires': '>3.0',
+	'author': 'mstills',
+	'src': 'coolModule.js'
+}
+
+There are some reserved methods that modules can use to gain exclusive access into the Rax Core that isn't afforded by the Rax object:
+var Rax = require('../core/rax');
+
+// Hook into the router mechanism the same way the core modules do
+module.exports.routes = {
+	'/coolModule': {
+		'get': function (req, res) {
+			res.end('Welcome to cool module.');
+		}
+	}
+}
+
+// a callback to be run during Rax bootstrap when module is first loaded
+module.exports.init = function () {
+};
+
+// Beacons API
+Rax.beacon.on('', function () {});
 
 Folder Hierarchy
 ----------------
