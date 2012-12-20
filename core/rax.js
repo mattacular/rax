@@ -18,7 +18,8 @@ var Rax								// main app object (public)
 
 var cfg = {
 	'USE_STATIC_FILESERVER': true,
-	'ENABLE_LOGGING': true
+	'ENABLE_APP_LOGGING': true,
+	'ENABLE_REQUEST_LOGGING': true
 }
 
 // expose globals
@@ -50,6 +51,10 @@ function boot(port) {
 	// 	res.end('Welcome to admin interface');
 	// }).listen(8080)));
 	core.server.use(connect.query());
+
+	if (cfg.ENABLE_REQUEST_LOGGING) {
+		core.server.use(connect.logger());
+	}
 
 	// check: use static file server?
 	if (cfg.USE_STATIC_FILESERVER) {

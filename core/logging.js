@@ -6,7 +6,7 @@ var	Logs = module.exports = {}
 // global.rax.log = Logs.log;
 
 function cLog(msg, color) {
-	if (Rax.cfg.ENABLE_LOGGING) {
+	if (Rax.cfg.ENABLE_APP_LOGGING) {
 		console.log((msg)[color]);
 	}
 }
@@ -26,7 +26,7 @@ Logs.u = function (msg) { cLog(msg, 'underline'); }
 // this is guaranteed by the bootstrap procedure.
 // this will not be allowed in 3rd party modules
 Logs.log = Rax.log = function () {
-	if (Rax.cfg.ENABLE_LOGGING) {
+	if (Rax.cfg.ENABLE_APP_LOGGING) {
 		console.log.apply(null, arguments);
 	}
 }
