@@ -53,7 +53,7 @@ Core Components
 	- themes are made up of 1 or more templates + 1 or more stylesheets (?)
 	- some templates are required. if active theme does not have required templates, they are inherited from the base theme?
 	- bindModel() ?
-	- stock templates: (extensible) ((global) = available to other templates as Handlebars helper)
+	- stock templates: (highly extensible) [(global) = available to other templates as Handlebars helper]
 		(global) htmlHead - <head/>
 		(global) htmlFoot - just before </body>
 		(global) contentHead - content heading to be used on most other pages (eg. heading logo, navbar etc)
@@ -66,6 +66,8 @@ Core Components
 		list - template for various list type pages that index articles (eg. search results, archives, list by category)
 		homepage - front page / index
 		dash_post - dashboard - post an article
+
+		*WARNING* don't nest global templates
 
 		themes and modules can both provide custom templates (and global templates) at will
 * Content Types/Models API (kind of like entities? maybe rename to something less generic)

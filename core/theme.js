@@ -7,7 +7,8 @@ var Theme = module.exports = {},
 	fs = require('fs'),
 	_ = require('underscore'),
 	loadTheme,
-	loadCfg;
+	loadCfg,
+	register;
 
 loadTheme = Theme.loadTheme = function (theme) {
 	var templates = {
@@ -26,7 +27,7 @@ loadTheme = Theme.loadTheme = function (theme) {
 	// get theme config
 	themeCfg = loadCfg();
 
-	Rax.logging.g('Loading active theme "' + theme.name + '"');
+	Rax.logging.g('Loading active theme "' + themeCfg.name + '"');
 	
 	// add any custom templates defined in the theme config to the templates manifest
 	_.each(themeCfg.templates, function (path, name) {
@@ -52,8 +53,6 @@ loadTheme = Theme.loadTheme = function (theme) {
 			parentModule = pieces[2];
 			moduleTemplate = pieces[(pieces.length - 1)].replace(/\.handlebars/, '');
 
-			Rax.log('Checking addon template...', pieces, moduleTemplate, parentModule);
-
 			// ensure that module is enabled otherwise it needs to be enabled
 			if (Rax.isDef(Rax.modules, [parentModule, 'variables', moduleTemplate])) {
 				moduleVars = Rax.modules[parentModule].variables;
@@ -61,25 +60,45 @@ loadTheme = Theme.loadTheme = function (theme) {
 				moduleVars = themeCfg.variables;
 			}
 
-			if (typeof Handlebars.helpers[name] === 'function') {
-				Rax.log('Helper already registered, possibly by the module itself...');
-				return true;
-			}
 
-			Handlebars.registerHelper(name, function () {
-				return template.content(moduleVars);
-			});
+			register(name, parentModule, template.content, moduleVars);
 		} else {
-			Handlebars.registerHelper(name, function () {
-				return template.content(themeCfg.variables);
-			});
+			parentModule = themeCfg.name;
+
+			// Handlebars.registerHelper(name, function () {
+			// 	return template.content(themeCfg.variables);
+			// });
+		
+			register(name, parentModule, template.content, themeCfg.variables);
 		}
 	});
-	Rax.log('returning...', typeof index);
+
 	// return compiled templates
 	return {
 		'index': index
 	};
+};
+
+/**
+ *	register() 
+ *	@alias addGlobal()
+ *		Registers a global template
+ */
+Theme.register = Theme.addGlobal = register = function (templateId, dependentId, template, model) {
+	model = model || {};
+
+	/*
+	 *	if 'templateId' has already been registered in the system,
+	 *	the duplicate will be registered as well and given the prefix
+	 *	of its module or theme (eg. 'foundation_hero' if 'hero' already exists)
+	 */
+	templateId = (typeof Handlebars.helpers[templateId] === 'function') ? dependentId.toLowerCase() + '_' + templateId : templateId;
+
+	Rax.logging.m('++ global: ' + templateId);
+
+	Handlebars.registerHelper(templateId, function () {
+		return template(model);
+	});
 };
 
 loadCfg = function (theme) {
@@ -93,7 +112,7 @@ loadCfg = function (theme) {
 
 // @TODO move to 'boot' beacon
 Rax.view = loadTheme();	// load the active theme as soon as this module is enabled
-Rax.log('loaded theme', Rax.view);
+
 Theme.render = function () {
 	var model;
 
