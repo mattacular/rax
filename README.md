@@ -18,7 +18,7 @@ Core Components
 	- modules can provide forms to templates
 	- utilizes Handlebars helpers (?)
 	- example:
--
+``
 		// test form
 		'page' = {
 			'uploadPicture': {
