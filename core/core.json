@@ -1,0 +1,28 @@
+{ 
+	"core_modules": [
+		{
+			"name": "Database Driver (MongoDB)",
+			"path": "database/mongo",
+			"description": "Maintains Rax app database and provides API",
+			"required": true,
+			"alias": "db",
+			"priority": 1,
+			"options": {}
+		},
+		{
+			"name": "Beacon",
+			"description": "Provides Beacon API, an event-based hook system for extending Rax",
+			"priority": 2,
+			"required": true,
+		},
+		{
+			"name": "Logging",
+			"description": "Provides Logging API for both console and *.log-file control",
+			"required": true,
+			"options": {
+				"private": false,
+				"deferLoad": false
+			}
+		}
+	]
+}
