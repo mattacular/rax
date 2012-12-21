@@ -25,7 +25,7 @@ Feature Brainstorming/Spec
 	- app-safe wrapper for Escort (https://github.com/ckknight/escort)
 * Forms API
 	- custom
-	- modules can provide forms to templates
+	- allows modules to provide forms to templates
 	- utilizes Handlebars helpers (?)
 	- example:
 
@@ -40,11 +40,15 @@ Feature Brainstorming/Spec
 							'type': 'textfield',
 							'title': 'Description'
 						}
+					},
+					'handlers': {
+						'validation': function () {},	// validation handler
+						'submit': function () {}		// submission handlers (override route handler?)
 					}
 				}
 			}
 
-	- can be exposed to templates/themes - {{uploadPicture}}
+	- can then be exposed as a global template - {{{form_uploadPicture}}}
 
 * Templating API
 	- utilizes Handlebars (HTML) and LESS (CSS) (maybe allow extensibility here in the future?)
@@ -53,22 +57,27 @@ Feature Brainstorming/Spec
 	- some templates are required. if active theme does not have required templates, they are inherited from the base theme?
 	- bindModel() ?
 	- stock templates: (highly extensible) [(global) = available to other templates as Handlebars helper]
-		(global) htmlHead - <head/>
-		(global) htmlFoot - just before </body>
-		(global) contentHead - content heading to be used on most other pages (eg. heading logo, navbar etc)
-		(global) contentFoot - content footer appears just before htmlFoot template on most other pages
-		author - author page, (eg. when user clicks byline)
-		article - article page
-		content-{content_type}
-		gallery 
-		section - section front page (only used if sections are enabled)
-		list - template for various list type pages that index articles (eg. search results, archives, list by category)
-		homepage - front page / index
-		dash_post - dashboard - post an article
+		- (global) htmlHead - <head/>
+		- (global) htmlFoot - just before </body>
+		- (global) contentHead - content heading to be used on most other pages (eg. heading logo, navbar etc)
+		- (global) contentFoot - content footer appears just before htmlFoot template on most other pages
+		- author - author page, (eg. when user clicks byline)
+		- article - article page
+		- content-{content_type}
+		- gallery 
+		- section - section front page (only used if sections are enabled)
+		- list - template for various list type pages that index articles (eg. search results, archives, list by category)
+		- homepage - front page / index
+		- dash_post - dashboard - post an article
 
 		*WARNING* don't nest global templates
 
 		themes and modules can both provide custom templates (and global templates) at will
+	- template types? (necessary?)
+		- global: snippet to be nested in another template (could call these 'block' templates instead of 'global')
+		- route/page: composite template that is rendered when route is requested ??
+		- widget: similar to global, can be nested
+		- form: specific type of widget template
 * Content Types/Models API (kind of like entities? maybe rename to something less generic)
 	- ???
 	- supported base types:
