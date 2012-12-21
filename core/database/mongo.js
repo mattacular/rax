@@ -19,8 +19,9 @@ Rax.beacon.once('dbLive', function () {
 		'PORT': Number
 	});
 
-	var cfg = mongoose.model('Config', cfgSchema);
+	var cfg = mongoose.model('Config', cfgSchema, 'configs');
 
+	// first pull the default configuration from the configs collection
 	cfg.findOne({ '_id': 'rax_cfg_default' }, function (err, instance) {
 		if (!instance) {
 			// create default config file
