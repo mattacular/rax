@@ -1,12 +1,11 @@
 /*jslint nomen: true, sloppy: true, devel: false, browser: true, maxerr: 50, indent: 4, white: true*/
 /*global module: false, process: false, require: false, console: false, clearInterval: false, clearTimeout: false, setInterval: false, setTimeout: false */
 /**
- *                        ________  ________
- *    _________ __  __   / ____/  |/  / ___/
- *   / ___/ __ `/ |/_/  / /   / /|_/ /\__ \ 
- *  / /  / /_/ />  <   / /___/ /  / /___/ / 
- * /_/   \__,_/_/|_|   \____/_/  /_//____/  
- *	rax.js - Rax CMS v0.0.1 Server Bootstrap
+ *    _________ __  __ 
+ *   / ___/ __ `/ |/_/ 
+ *  / /  / /_/ />  <   
+ * /_/   \__,_/_/|_|   
+ *	rax.js - Rax v0.0.1 Server Bootstrap
  *	created by: mstills
  */
 var Rax,							// main app object (public)
