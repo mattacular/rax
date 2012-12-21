@@ -17,7 +17,7 @@ Core Components
 	- custom
 	- modules can provide forms to templates
 	- utilizes Handlebars helpers (?)
-	-
+
 		// test form
 		'page' = {
 			'uploadPicture': {
