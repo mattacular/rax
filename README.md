@@ -19,7 +19,6 @@ Core Components
 	- utilizes Handlebars helpers (?)
 
 	'page' = {
-
 		'uploadPicture': {
 
 			'prefix': '<div class="site-upload-picture-form">',
@@ -43,7 +42,6 @@ Core Components
 		}
 
 	}
-	
 
 	- can be exposed to templates/themes - {{uploadPicture}}
 
@@ -145,7 +143,7 @@ Recommended Setup
 * Rax on Node.js
 	- services all dynamic requests
 
-Can also be done with just Node though using the Rax static file server option!
+Can also be done with just NodeJS using the Rax static file server option!
 
 3rd Party Module Spec (Rax Modules)
 ---------------------
@@ -155,89 +153,31 @@ for installing any npm dependencies it utilizes.
 
 For Rax though, 3rd party modules must be identified by a "module.json" file.
 
-{
-	'title': 'Cool Module',
-	'description': 'A cool module',
-	'git': 'https://...'	// please host your modules on github so they can be updated through the admin interface!
-	'version': '0.0.1'
-	'requires': '>3.0',
-	'author': 'mstills',
-	'src': 'coolModule.js'
-}
+	{
+		'title': 'Cool Module',
+		'description': 'A cool module',
+		'git': 'https://...'	// please host your modules on github so they can be updated through the admin interface!
+		'version': '0.0.1'
+		'requires': '>3.0',
+		'author': 'mstills',
+		'src': 'coolModule.js'
+	}
 
 There are some reserved methods that modules can use to gain exclusive access into the Rax Core that isn't afforded by the Rax object:
 var Rax = require('../core/rax');
 
-// Hook into the router mechanism the same way the core modules do
-module.exports.routes = {
-	'/coolModule': {
-		'get': function (req, res) {
-			res.end('Welcome to cool module.');
+	// Hook into the router mechanism the same way the core modules do
+	module.exports.routes = {
+		'/coolModule': {
+			'get': function (req, res) {
+				res.end('Welcome to cool module.');
+			}
 		}
 	}
-}
 
-// a callback to be run during Rax bootstrap when module is first loaded
-module.exports.init = function () {
-};
+	// a callback to be run during Rax bootstrap when module is first loaded
+	module.exports.init = function () {
+	};
 
-// Beacons API
-Rax.beacon.on('', function () {});
-
-Folder Hierarchy
-----------------
-> ./ 			(rax top-level)
-
-> bin/			(rax CLI stuff)
-
-> core/			(core modules)
-
->> cli/		(CLI JS)
-
->> rax.js
-
->modules/		(3rd party rax modules)
-
->> example/		(example module to demonstrate per-module hierarchy)
-
->>> assets/		(optional, images/css assets used by this module)
-
->>> node_mod../ (optional, additional npm libraries/dependencies of this module)
-
->>> js/			(optional, some larger modules may want to utilize more than one *.js file)
-
->>>> server/		(optional, server JS)
-
->>>> client/		(optional, client JS)
-
->>> main.js 	(required, can be named anything, the main JS file for this module)
-
->>> module.json (required, must be named module.json, identifies the main JS file, similar to CommonJS modules)
-
-> interface/		(GUI interface files)
-
-> client/			(client files)
-
->> js/				(client JavaScript)
-
->> lib/			(client libraries)
-
->> css/			(defaults, if theme doesn't provide)
-
-> themes/			(themes)
-
->> stock/			(stock theme)
-
->>> js/				(theme specific JS)
-
->>> css/			(theme specific CSS)
-
->>> templates/		(templates)
-
->>> theme.json 		(identifier / config)
-
-> uploads/		(site upload storage)
-
-> node_modules/	(app libraries)
-
-> settings/		(various JSON configs which get replicated to DB)
+	// Beacons API
+	Rax.beacon.on('', function () {});
