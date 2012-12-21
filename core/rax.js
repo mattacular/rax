@@ -171,7 +171,24 @@ function loadAddons() {
 	}
 
 }
+/*
+	module entry doc struct - replace these temp funcs
+	on 3rd party modules, entry is provided via module.json
+	array of objects (each obj is an entry):
 
+	{
+		'name': 'Logging',
+		'version': '0.1',
+		'description': 'API for both console and *.log-file logging control'
+		'type': 'core',
+		'required': true,
+		'alias': 'logging'	// Rax.logging (core) || Rax.module.logging (3rd party)
+		'options': {
+			'private': false
+			'deferLoad': false	// defer loading til after server boot
+		}
+	}
+*/
 // @TODO temp function
 function getActiveAddonModules() {
 	return ['glados'];
