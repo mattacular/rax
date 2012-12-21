@@ -1,24 +1,35 @@
 {
 	"name": "rax",
-	"description": "modular node.js CMS",
+	"description": "Editorial engine; a highly modular and sophisticated NodeJS CMS",
 	"version": "0.0.1",
-	"homepage": "http://www.mattstills.com/rax",
+	"homepage": "http://www.github.com/mattacular/rax",
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/mattacular/rax.git"
 	},
+	"engines": {
+		"node": ">=0.8"
+	},
 	"author": "Matt Stills <mattacular@gmail.com>",
+	"main": "./core/rax.js",
 	"directories": {
-		"core": "./core"
+		"core": "./core",
+		"conf": "./conf",
+		"client": "./client",
+		"modules": "./modules",
+		"themes": "./themes"
+	},
+	"devDependencies": {
+		"mocha": ">=1.7.4"
 	},
 	"dependencies": {
-		"connect": "2.x.x",
-		"less": ">= 1.3.1",
-		"underscore": ">= 1.4.2",
-		"escort": ">= 0.0.13",
-		"colors": ">= 0.6.0-1",
-		"handlebars": ">= 1.0.7",
-		"mongoose": ">= 2.5.x"
+		"connect": ">=2.x.x",
+		"less": ">=1.3.1",
+		"underscore": ">=1.4.2",
+		"escort": ">=0.0.13",
+		"colors": ">=0.6.0-1",
+		"handlebars": ">=1.0.7",
+		"mongoose": ">=2.5.x"
 	}
 }
 		
