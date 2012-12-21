@@ -15,6 +15,7 @@ var Rax,							// main app object (public)
 	escort = require('escort'),		// router
 	fs = require('fs'),
 	colors = require('colors'),
+	sessionStore = require('connect-mongo')(connect),
 	connections = 0,
 	modules, cfg,
 	warn, error, info;
@@ -24,9 +25,29 @@ Rax = module.exports = {
 	'init': init,
 	'router': escort,
 	'cfg': {},
+	'active': {
+		'theme': false,
+		'session': false,
+		'user': false
+	},
 	'modules': {},	// addon module store
 	'root': process.cwd()
 };
+
+/*
+	Rax.pipeline spec - render pipeline can be altered anytime before res.end(). Contains
+		models that will be run against templates at response-time.
+
+		Rax.pipeline.posts[0].headline = "LATEST:" + headline	// altering the first post's headline in the pipeline
+
+		Somewhat based on Drupal render arrays-ish?
+
+	Rax.active spec - property store of 'active' objects within the Rax system
+
+	eg. Rax.active.user - current user object (always exists, even if no user is logged in - returns anonymous user)
+		Rax.active.theme - current theme.json is available here
+		Rax.active.session - current session
+*/
 
 // set an absolute reference to Rax core so other modules can require() it easily
 global.rax_core = Rax.root + '/core/rax.js';
@@ -55,7 +76,6 @@ function boot(port) {
 	info = Rax.logging.info;
 	warn = Rax.logging.warn;
 	error = Rax.logging.error;
-
 	Rax.log(('[Rax] Core modules loaded.').cyan);
 	Rax.log(('[Rax] Booting...').cyan);
 
@@ -65,38 +85,62 @@ function boot(port) {
 
 	// start server
 	info('Starting server...');
-	core.server = connect.createServer();
+	Rax.server = connect.createServer();
 
 	// connect middleware
-	core.server.use(connect.favicon());
-	core.server.use(connect.query());
+	Rax.server.use(connect.favicon());
+	Rax.server.use(connect.query());
 
 	// @TODO session middleware for Rax (probably needs to be custom but maybe not)
+	Rax.server.use(connect.cookieParser());
+	Rax.server.use(connect.session({
+		'cookie': { 'maxAge': 60000 * 60 },
+		'secret': 'raxFoo',
+		'store': new sessionStore({'db': 'test'})
+	}));
+	Rax.server.use(function (req, res, next) {
+		if (req.session && req.session.user) {
+			Rax.logging.y('this user has a session already, user = ' + req.session.user);
+		} else {
+			req.session.user = 'anonymous';
+			req.session.userId = 0;
+			Rax.logging.y('new user without session');
+		}
+
+		Rax.active.session = req.session;
+		next();
+	});
 	// @TODO user middleware for Rax (custom)
 
 	if (cfg.ENABLE_REQUEST_LOGGING) {
-		core.server.use(connect.logger());
+		Rax.server.use(connect.logger());
 	}
 
 	// check: use static file server?
 	if (cfg.USE_STATIC_FILESERVER) {
 		// @TODO allow usage of built-in static fileserver
 		info('Enabling static server @ ' + Rax.root + '/static');
-		core.server.use(connect.static(Rax.root + '/static'));
+		Rax.server.use(connect.static(Rax.root + '/static'));
 	}
 
 	// serve theme's static files
-	core.server.use(connect.static(Rax.root + '/themes/' + cfg.ACTIVE_THEME, { maxAge: 1000 }));
+	Rax.server.use(connect.static(Rax.root + '/themes/' + cfg.ACTIVE_THEME, { maxAge: 1000 }));
 
 	// lastly, connect router & the routes map
-	core.server.use(Rax.router(core.routes));
+	Rax.server.use(Rax.router(core.routes));
 
 	// listen!
-	core.server.listen(port);
+	Rax.server.listen(port);
+
+	// after bootstrap is done, save a private reference to the server and remove it from the public app object
+	// so that it can't be damaged by rogue modules etc
+	core.server = Rax.server;
+	delete Rax.server;
 
 	// bootstrap complete, safe for other modules to init
 	Rax.beacon.emit('init');
 	Rax.logging.c('[Rax] Booting complete. Rax is listening on ' + port + '...');
+	Rax.logging.c('[Rax] Active theme = ' + Rax.active.theme.name);
 }
 
 function loadModule(mid, type) {

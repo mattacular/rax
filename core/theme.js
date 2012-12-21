@@ -24,7 +24,7 @@ loadTheme = Theme.loadTheme = function (theme) {
 	theme = theme || Rax.cfg.ACTIVE_THEME;
 
 	// get theme config
-	themeCfg = loadCfg();
+	themeCfg = Rax.active.theme = loadCfg();
 
 	Rax.logging.g('Loading active theme "' + themeCfg.name + '"');
 	
