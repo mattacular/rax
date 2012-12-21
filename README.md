@@ -5,8 +5,14 @@ CMS for Node.js
 
 Want to help develop this project? Read about it below and if you think you're still interested, [e-mail me](mailto:mattacular@gmail.com)!
 
-Trello Board
+About
+-----
+Rax is the codename for a highly modular, highly sophisticated CMS for NodeJS. It is inspired by the simplicity of Wordpress fused with the power and of Drupal. The result is a true editorial engine, the first of its kind. This means that Rax is designed from the ground up with both developers AND editorial staff in mind. This is essentially a two-pronged approach. For editors, Rax's UI must be state of the art and intuitive with features like inline editing, collaboration, and live preview. For developers, the API should be just as intuitive but also robust. The most popular CMS rely on a thriving community of module developers, theme developers, etc. Build a meaningful, stable API to be leveraged and they will come!
+
+[Trello Board](https://trello.com/board/node-cms/50c363b1a538d8062a002368)
 ------------
+For tracking progress, prioritizing features/functionality, and brain storming new concepts!
+
 https://trello.com/board/node-cms/50c363b1a538d8062a002368
 
 Core Components
