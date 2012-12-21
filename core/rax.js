@@ -21,7 +21,7 @@ var Rax,							// main app object (public)
 
 // expose core public methods and properties
 Rax = module.exports = {
-	'start': start,
+	'init': init,
 	'router': escort,
 	'cfg': {},
 	'modules': {},	// addon module store
@@ -29,9 +29,9 @@ Rax = module.exports = {
 };
 
 // set an absolute reference to Rax core so other modules can require() it easily
-global.raxCore = Rax.root + '/core/rax.js';
+global.rax_core = Rax.root + '/core/rax.js';
 
-function start() {
+function init() {
 	// load base modules (beacon API and database API)
 	Rax.beacon = loadModule('beacon');
 	Rax.db = loadModule('database/mongo');
@@ -41,6 +41,10 @@ function start() {
 		cfg = Rax.cfg;
 		boot(cfg.PORT);	// load rest of core and boot server
 	});
+
+	// remove this method from the Rax app object so that it cannot accidentally be run again
+	// after the app is already initialized
+	delete Rax.init;
 }
 
 function boot(port) {

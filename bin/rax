@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+DIRC=`echo "$0" | sed -e 's/\\\\/\\//g'`
+DIR=`dirname "$DIRC"`
+
+if [ -f "${DIR}/../core/rax.js" ]
+then
+	NODE_PATH="${DIR}/.." exec node "${DIR}/../server.js" $*
+fi

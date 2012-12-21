@@ -1,4 +1,4 @@
-var Rax = require(global.raxCore),
+var Rax = require(global.rax_core),
 	Handlebars = require('handlebars')
 
 function init() {
