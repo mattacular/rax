@@ -19,8 +19,8 @@ For tracking progress, prioritizing features/functionality, and brain storming n
 
 https://trello.com/board/node-cms/50c363b1a538d8062a002368
 
-Core Components
----------------
+Feature Brainstorming/Spec
+--------------------------
 * Router API
 	- app-safe wrapper for Escort (https://github.com/ckknight/escort)
 * Forms API
@@ -132,19 +132,21 @@ Core Components
 	- Build systems?
 	- Pre-compilation of templates
 
-Recommended Setup
------------------
+Recommended Server Setup
+------------------------
+Node is unique in that it is its own webserver. It can server static files and requests all by itself! However, certain size sites may benefit from alternate setups.
+For taking full advantage of Rax's functionality AND retaining full control over performance aspects w/avenues for effective scalability here is the recommended stack:
+
 * Varnish in front
 	- cache layer
 	- directs websocket traffic straight to Rax running on Node server (allows for real-time editing)
 	- all other traffic to Nginx server
-* Nginx
+* Nginx Reverse Proxy
 	- services static requests (via wildcard match) from /www/public_html
-	- proxy all other requests to Rax running on Node server
+	- serves theme assets from /www/rax/theme/active
+	- proxy all other requests to Rax app running on Node server (/)
 * Rax on Node.js
 	- services all dynamic requests
-
-Can also be done with just NodeJS using the Rax static file server option!
 
 3rd Party Module Spec (Rax Modules)
 ---------------------
