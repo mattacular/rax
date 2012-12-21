@@ -19,7 +19,7 @@ Core Components
 	- utilizes Handlebars helpers (?)
 	- example:
 
-			    // test form
+		    // test form
 			'page' = {
 				'uploadPicture': {
 					'prefix': '<div class="site-upload-picture-form">',
@@ -32,7 +32,7 @@ Core Components
 						}
 					}
 				}
-			}`
+			}
 
 	- can be exposed to templates/themes - {{uploadPicture}}
 
