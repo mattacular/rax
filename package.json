@@ -32,7 +32,8 @@
 		"handlebars": ">=1.0.7",
 		"mongoose": ">=2.5.x",
 		"bcrypt": ">=0.7.3",
-		"nodemailer": ">=0.3.37"
+		"nodemailer": ">=0.3.37",
+		"async": ">=0.1.22"
 	}
 }
 		

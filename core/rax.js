@@ -14,6 +14,7 @@ var Rax,							// main app object (public)
 	escort = require('escort'),		// router
 	fs = require('fs'),
 	colors = require('colors'),
+	async = require('async'),
 	sessionStore = require('connect-mongo')(connect),
 	connections = 0,
 	modules, cfg,
@@ -23,6 +24,7 @@ var Rax,							// main app object (public)
 Rax = module.exports = {
 	'init': init,
 	'router': escort,
+	'async': async,
 	'cfg': {},
 	'active': {
 		'theme': false,
@@ -99,20 +101,16 @@ function boot(port) {
 	Rax.server.use(connect.favicon());
 	Rax.server.use(connect.query());
 
-	// @TODO session middleware for Rax (probably needs to be custom but maybe not)
+	// session middleware
 	Rax.server.use(connect.cookieParser());
 	Rax.server.use(connect.session({
-		'cookie': { 'maxAge': 60000 * 60 },	// soft login (session based) lasts 60 min (always require a hard login for sensitive tasks)
 		'secret': 'RaxOnRaxOnRax',
 		'store': new sessionStore({'db': 'test'})
 	}));
 
-	// @DEV user test
+	// @DEV user/session test middleware
 	//Rax.server.use(Rax.middleware.checkSessionUser());
-
 	Rax.server.use(function (req, res, next) {
-		Rax.log(req.method);
-		req.rax = {};
 		// if session exists, see if a user is associated
 		if (req.session && req.session.user && req.session.user !== 'anonymous') {
 			Rax.log('logging in...', req.session.user);
@@ -127,7 +125,6 @@ function boot(port) {
 			next();
 		}
 	});
-	// @TODO user middleware for Rax (custom)
 
 	if (cfg.ENABLE_REQUEST_LOGGING) {
 		Rax.server.use(connect.logger());

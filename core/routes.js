@@ -46,17 +46,35 @@ routes = function () {
 			if (req.body.user.pass) {
 				Rax.user.get({ 'name': req.body.user.name }, function (err, user) {
 					user.comparePassword(req.body.user.pass, function (err, isMatch) {
+						Rax.log(req.body.user);
 						if (!isMatch) {
 							Rax.log('route back to login with failure');
 							res.writeHead(302, { 'Location': '/' });
 							res.end();
 						} else {
 							req.session.user = user.name;
-							req.session.save();
-							Rax.user.model.update({ 'name': req.body.user.name }, { 'session_id': req.sessionID }, function () {
+
+
+							if (typeof req.body.user.persist === 'string' && req.body.user.persist === 'on') {
+								req.session.cookie.maxAge = 60000 * 60;
+
+								// run save tasks in parallel
+								Rax.async.parallel([
+									function (cb) {
+										req.session.save(cb)
+									},
+									function (cb) {
+										Rax.user.model.update({ 'name': req.body.user.name }, { 'session_id': req.sessionID }, cb);
+									}
+								], function () {
+									// after save is complete, redirect to index
+									res.writeHead(302, { 'Location': '/' });
+									res.end();
+								});
+							} else {
 								res.writeHead(302, { 'Location': '/' });
 								res.end();
-							});
+							}
 						}
 					});
 				}, true);
