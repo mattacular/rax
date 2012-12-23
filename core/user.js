@@ -5,8 +5,8 @@ var User = module.exports = {},
 	Rax = require('./rax'),
 	mongoose = require('mongoose'),
 	bcrypt = require('bcrypt'),			// encryption module for safe password persistence
-	SALT_WORK_FACTOR = 10,
-	nodemailer = require('nodemailer');
+	nodemailer = require('nodemailer'),
+	SALT_WORK_FACTOR = 10;
 
 User.routes = {
 	'/logout': {

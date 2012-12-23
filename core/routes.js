@@ -39,8 +39,7 @@ routes = function () {
 
 	this.bind('login', '/login', {
 		'get': function (req, res) {
-			res.writeHeader(200, {"Content-Type": "text/html"});
-			res.write(Rax.theme.render('login'));
+			res.writeHeader( 302, { 'Location': '/' } );
 			res.end();
 		},
 		'post': function (req, res) {
@@ -49,7 +48,7 @@ routes = function () {
 					user.comparePassword(req.body.user.pass, function (err, isMatch) {
 						if (!isMatch) {
 							Rax.log('route back to login with failure');
-							res.writeHead(302, { 'Location': '/login' });
+							res.writeHead(302, { 'Location': '/' });
 							res.end();
 						} else {
 							req.session.user = user.name;
