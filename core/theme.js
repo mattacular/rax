@@ -10,7 +10,7 @@ var Theme = module.exports = {},
 	loadCfg,
 	register;
 
-loadTheme = Theme.loadTheme = function (theme) {
+loadTheme = Theme.loadTheme = function (theme, options) {
 	var templates = {
 			'contentHead': {
 				'path': '/themes/foundation/contentHead.handlebars'
@@ -61,10 +61,12 @@ loadTheme = Theme.loadTheme = function (theme) {
 			} else {
 				moduleVars = themeCfg.variables;
 			}
-
+			_.extend(moduleVars, options);
+			Rax.log(moduleVars);
 			register(name, parentModule, template.content, moduleVars);
 		} else {
 			parentModule = themeCfg.name;
+			_.extend(themeCfg.variables, options);
 			register(name, parentModule, template.content, themeCfg.variables);
 		}
 	});
@@ -107,8 +109,8 @@ loadCfg = function (theme) {
 	return JSON.parse(raw);
 };
 
-Rax.beacon.once('coreLoaded', function () {
-	Rax.view = loadTheme();	// load the active theme as soon as this module is enabled
+Rax.beacon.once('init', function () {
+	Rax.view = loadTheme(Rax.cfg.ACTIVE_THEME, {});	// load the active theme as soon as this module is enabled
 });
 
 Theme.render = function (type, options) {
@@ -119,6 +121,7 @@ Theme.render = function (type, options) {
 		'user': Rax.active.user,
 		'options': options
 	};
+
 	if (typeof Rax.view[type] === 'function') {
 		return Rax.view[type](model);
 	}

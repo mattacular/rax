@@ -108,6 +108,8 @@ function boot(port) {
 	}));
 
 	// @DEV user test
+	//Rax.server.use(Rax.middleware.checkSessionUser());
+
 	Rax.server.use(function (req, res, next) {
 		Rax.log(req.method);
 		req.rax = {};
