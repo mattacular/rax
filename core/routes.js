@@ -37,6 +37,34 @@ routes = function () {
 		res.end();
 	});
 
+	this.bind('login', '/login', {
+		'get': function (req, res) {
+			res.writeHeader(200, {"Content-Type": "text/html"});
+			res.write(Rax.theme.render('login'));
+			res.end();
+		},
+		'post': function (req, res) {
+			if (req.body.user.pass) {
+				Rax.user.get({ 'name': 'matt' }, function (err, user) {
+					user.comparePassword('wampa', function (err, isMatch) {
+						if (!isMatch) {
+							Rax.log('route back to login with failure');
+							res.writeHead(302, { 'Location': '/login' });
+							res.end();
+						} else {
+							req.session.user = user.name;
+							req.session.save();
+							Rax.user.model.update({ 'name': 'matt' }, { 'session_id': req.sessionID }, function () {
+								res.writeHead(302, { 'Location': '/' });
+								res.end();
+							});
+						}
+					});
+				}, true);
+			}
+		}
+	});
+
 	// (404) not found - the Rax router is the end of the middleware chain, so
 	// we will handle a 'not found' case here. The option to extend the middleware
 	// chain beyond the router is left open though via the next() function.

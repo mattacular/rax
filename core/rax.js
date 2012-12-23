@@ -87,34 +87,6 @@ function boot(port) {
 	Rax.server = connect.createServer();
 
 	// connect middleware
-	Rax.server.use(connect.favicon());
-	Rax.server.use(connect.query());
-
-	// @TODO session middleware for Rax (probably needs to be custom but maybe not)
-	Rax.server.use(connect.cookieParser());
-	Rax.server.use(connect.session({
-		'cookie': { 'maxAge': 60000 * 60 },
-		'secret': 'raxFoo',
-		'store': new sessionStore({'db': 'test'})
-	}));
-	Rax.server.use(function (req, res, next) {
-		if (req.session && req.session.user) {
-			Rax.logging.y('this user has a session already, user = ' + req.session.user);
-		} else {
-			req.session.user = 'anonymous';
-			req.session.userId = 0;
-			Rax.logging.y('new user without session');
-		}
-
-		Rax.active.session = req.session;
-		next();
-	});
-	// @TODO user middleware for Rax (custom)
-
-	if (cfg.ENABLE_REQUEST_LOGGING) {
-		Rax.server.use(connect.logger());
-	}
-
 	// check: use static file server?
 	if (cfg.USE_STATIC_FILESERVER) {
 		// @TODO allow usage of built-in static fileserver
@@ -124,8 +96,58 @@ function boot(port) {
 
 	// serve theme's static files
 	Rax.server.use(connect.static(Rax.root + '/themes/' + cfg.ACTIVE_THEME, { maxAge: 1000 }));
+	Rax.server.use(connect.favicon());
+	Rax.server.use(connect.query());
+
+	// @TODO session middleware for Rax (probably needs to be custom but maybe not)
+	Rax.server.use(connect.cookieParser());
+	Rax.server.use(connect.session({
+		'cookie': { 'maxAge': 60000 * 60 },
+		'secret': 'RaxOnRaxOnRax',
+		'store': new sessionStore({'db': 'test'})
+	}));
+
+	// @DEV user test
+	Rax.server.use(function (req, res, next) {
+		// if session exists, see if a user is associated
+		if (req.session && req.session.user && req.session.user !== 'anonymous') {
+			Rax.log('logging in...', req.session.user);
+
+			Rax.user.get({ 'name': req.session.user }, function (err, instance) {
+				Rax.active.user = instance;
+				next();
+			});
+
+			// Rax.log('session meth', typeof req.session.save);
+			// Rax.user.get({ 'session_id': req.sessionID }, function (err, instance) {
+			// 	if (!err && instance) {
+			// 		Rax.active.user = instance;
+			// 		req.session.user = instance.name;
+			// 		req.session.save();
+			// 		Rax.log('logged in', instance.name);
+			// 	} else if (!instance) {
+			// 		Rax.log('session belongs to another user... log out');
+			// 		req.session.user = 'anonymous';
+			// 		req.session.save();
+			// 	}
+
+			// 	Rax.active.session = req.session;
+			// 	next();
+			// });
+		} else {
+			Rax.log('no session cookie for this user... login');
+			req.url = '/login';
+			next();
+		}
+	});
+	// @TODO user middleware for Rax (custom)
+
+	if (cfg.ENABLE_REQUEST_LOGGING) {
+		Rax.server.use(connect.logger());
+	}
 
 	// lastly, connect router & the routes map
+	Rax.server.use(connect.bodyParser());
 	Rax.server.use(Rax.router(core.routes));
 
 	// listen!
@@ -243,5 +265,5 @@ function getActiveAddonModules() {
 
 // @TODO temp function
 function getActiveModules() {
-	return ['logging', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
+	return ['logging', 'user', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
 }

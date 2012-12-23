@@ -9,6 +9,9 @@ Database.identify = function () {
 	Rax.log('hello I am mongo!');
 };
 
+// expose Mongoose methods
+Database.Schema = mongoose.Schema;
+Database.model = mongoose.model;
 Rax.beacon.once('dbLive', function () {
 	var cfgSchema = mongoose.Schema({
 		'_id': String,

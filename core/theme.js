@@ -38,6 +38,9 @@ loadTheme = Theme.loadTheme = function (theme) {
 	index = fs.readFileSync(Rax.root + '/themes/foundation/index.handlebars', 'utf8');
 	index = Handlebars.compile(index);
 
+	login = fs.readFileSync(Rax.root + '/themes/foundation/login.handlebars', 'utf8');
+	login = Handlebars.compile(login);
+
 	// register all templates as Handlebars helpers
 	_.each(templates, function (template, name) {
 		Rax.logging.g('Registering theme template "' + name + '" (' + template.path + ')');
@@ -74,7 +77,8 @@ loadTheme = Theme.loadTheme = function (theme) {
 
 	// return compiled templates
 	return {
-		'index': index
+		'index': index,
+		'login': login
 	};
 };
 
@@ -113,12 +117,14 @@ Rax.beacon.once('coreLoaded', function () {
 	Rax.view = loadTheme();	// load the active theme as soon as this module is enabled
 });
 
-Theme.render = function () {
+Theme.render = function (type) {
 	var model;
-
+	type = type || 'index';
 	model = {
-		'welcome': 'Welcome to RAX!'
+		'welcome': 'Welcome to RAX!',
+		'user': Rax.active.user
 	};
-
-	return Rax.view.index(model);
+	if (typeof Rax.view[type] === 'function') {
+		return Rax.view[type](model);
+	}
 };
