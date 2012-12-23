@@ -4,11 +4,31 @@
 var User = module.exports = {},
 	Rax = require('./rax'),
 	mongoose = require('mongoose'),
-	bcrypt = require('bcrypt'),
+	bcrypt = require('bcrypt'),			// encryption module for safe password persistence
 	SALT_WORK_FACTOR = 10
 
+User.routes = {
+	'/logout': {
+		'id': 'user:logout',
+		'get': function (req, res) {
+			if (Rax.active.user && Rax.active.user !== 'anon') {
+				Rax.log('logging out', Rax.active.user);
+
+				req.session.destroy(function () {
+					res.writeHead(302, { 'Location': '/' });
+					res.end();
+				});
+			} else {
+				res.write('Already logged out');
+				res.end();
+			}
+		}
+	}
+};
+
+// User.db = provide schema and models
+
 Rax.beacon.on('coreLoaded', function () {
-	console.log('yoyoyo');
 	// define user schema
 	var userSchema = Rax.schema = mongoose.Schema({
 		'name': String,
@@ -18,6 +38,7 @@ Rax.beacon.on('coreLoaded', function () {
 		'session_id': String
 	});
 
+	// generate a salt for this session
 	bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
 		if (err) return next(err);
 
@@ -30,6 +51,7 @@ Rax.beacon.on('coreLoaded', function () {
 		});
 	});
 
+	// when preparing to save a new user, convert password to a salted hash
 	userSchema.pre('save', function (next) {
 		var user = this;
 

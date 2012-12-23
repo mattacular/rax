@@ -102,13 +102,15 @@ function boot(port) {
 	// @TODO session middleware for Rax (probably needs to be custom but maybe not)
 	Rax.server.use(connect.cookieParser());
 	Rax.server.use(connect.session({
-		'cookie': { 'maxAge': 60000 * 60 },
+		'cookie': { 'maxAge': 60000 * 60 },	// soft login (session based) lasts 60 min (always require a hard login for sensitive tasks)
 		'secret': 'RaxOnRaxOnRax',
 		'store': new sessionStore({'db': 'test'})
 	}));
 
 	// @DEV user test
 	Rax.server.use(function (req, res, next) {
+		Rax.log(req.method);
+		req.rax = {};
 		// if session exists, see if a user is associated
 		if (req.session && req.session.user && req.session.user !== 'anonymous') {
 			Rax.log('logging in...', req.session.user);
@@ -136,7 +138,7 @@ function boot(port) {
 			// });
 		} else {
 			Rax.log('no session cookie for this user... login');
-			req.url = '/login';
+			Rax.active.user = 'anon';
 			next();
 		}
 	});

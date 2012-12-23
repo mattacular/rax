@@ -4,12 +4,15 @@
 		{{{htmlHead}}}
 	</head>
 	<body>
+		{{#if options.showLogin}}
+			{{{login}}}
+		{{/if}}
 		{{{contentHead}}}
 
 		{{{hero}}}
 
 		{{#if user.name}}
-			<p style="color: #FFF;">Welcome {{user.name}}!</p>
+			<p style="color: #FFF;">Welcome {{user.name}}! <a href="/logout" id="signout">Signout</a></p> 
 		{{/if}}
 
 

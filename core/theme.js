@@ -117,12 +117,13 @@ Rax.beacon.once('coreLoaded', function () {
 	Rax.view = loadTheme();	// load the active theme as soon as this module is enabled
 });
 
-Theme.render = function (type) {
+Theme.render = function (type, options) {
 	var model;
 	type = type || 'index';
 	model = {
 		'welcome': 'Welcome to RAX!',
-		'user': Rax.active.user
+		'user': Rax.active.user,
+		'options': options
 	};
 	if (typeof Rax.view[type] === 'function') {
 		return Rax.view[type](model);

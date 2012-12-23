@@ -6,7 +6,8 @@
 	"engine": "Handlebars",
 	"templates": {
 		"hero": true,
-		"module_template": "/modules/glados/testing.handlebars"	
+		"module_template": "/modules/glados/testing.handlebars",
+		"login": true
 	},
 	"variables": {
 		"raxVersion": "0.0.1",
