@@ -96,7 +96,8 @@ Theme.register = Theme.addGlobal = register = function (templateId, dependentId,
 	Rax.logging.m('++ global: ' + templateId);
 
 	Handlebars.registerHelper(templateId, function () {
-		return template(model);
+		model = _.extend(model, this);
+		return template(this);
 	});
 };
 
