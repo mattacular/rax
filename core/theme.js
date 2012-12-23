@@ -97,7 +97,7 @@ Theme.register = Theme.addGlobal = register = function (templateId, dependentId,
 
 	Handlebars.registerHelper(templateId, function () {
 		model = _.extend(model, this);
-		return template(this);
+		return template(model);
 	});
 };
 
