@@ -19,7 +19,7 @@ loadTheme = Theme.loadTheme = function (theme) {
 				'path': '/themes/foundation/htmlHead.handlebars'
 			}
 		}, 
-		index, themeCfg, parentModule, moduleTemplate, moduleVars, pieces, i;
+		index, themeCfg, parentModule, moduleTemplate, moduleVars, pieces, i, login;
 
 	theme = theme || Rax.cfg.ACTIVE_THEME;
 
@@ -62,15 +62,9 @@ loadTheme = Theme.loadTheme = function (theme) {
 				moduleVars = themeCfg.variables;
 			}
 
-
 			register(name, parentModule, template.content, moduleVars);
 		} else {
 			parentModule = themeCfg.name;
-
-			// Handlebars.registerHelper(name, function () {
-			// 	return template.content(themeCfg.variables);
-			// });
-		
 			register(name, parentModule, template.content, themeCfg.variables);
 		}
 	});

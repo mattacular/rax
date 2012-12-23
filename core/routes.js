@@ -45,8 +45,8 @@ routes = function () {
 		},
 		'post': function (req, res) {
 			if (req.body.user.pass) {
-				Rax.user.get({ 'name': 'matt' }, function (err, user) {
-					user.comparePassword('wampa', function (err, isMatch) {
+				Rax.user.get({ 'name': req.body.user.name }, function (err, user) {
+					user.comparePassword(req.body.user.pass, function (err, isMatch) {
 						if (!isMatch) {
 							Rax.log('route back to login with failure');
 							res.writeHead(302, { 'Location': '/login' });
@@ -54,7 +54,7 @@ routes = function () {
 						} else {
 							req.session.user = user.name;
 							req.session.save();
-							Rax.user.model.update({ 'name': 'matt' }, { 'session_id': req.sessionID }, function () {
+							Rax.user.model.update({ 'name': req.body.user.name }, { 'session_id': req.sessionID }, function () {
 								res.writeHead(302, { 'Location': '/' });
 								res.end();
 							});

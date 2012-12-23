@@ -1,5 +1,5 @@
 /*jslint nomen: true, sloppy: true, devel: false, browser: true, maxerr: 50, indent: 4, white: true*/
-/*global module: false, process: false, require: false, console: false, clearInterval: false, clearTimeout: false, setInterval: false, setTimeout: false */
+/*global global: false, module: false, process: false, require: false, console: false, clearInterval: false, clearTimeout: false, setInterval: false, setTimeout: false */
 /**
  *    _________ __  __ 
  *   / ___/ __ `/ |/_/ 
@@ -119,23 +119,6 @@ function boot(port) {
 				Rax.active.user = instance;
 				next();
 			});
-
-			// Rax.log('session meth', typeof req.session.save);
-			// Rax.user.get({ 'session_id': req.sessionID }, function (err, instance) {
-			// 	if (!err && instance) {
-			// 		Rax.active.user = instance;
-			// 		req.session.user = instance.name;
-			// 		req.session.save();
-			// 		Rax.log('logged in', instance.name);
-			// 	} else if (!instance) {
-			// 		Rax.log('session belongs to another user... log out');
-			// 		req.session.user = 'anonymous';
-			// 		req.session.save();
-			// 	}
-
-			// 	Rax.active.session = req.session;
-			// 	next();
-			// });
 		} else {
 			Rax.log('no session cookie for this user... login');
 			Rax.active.user = 'anon';
@@ -184,7 +167,7 @@ function loadModule(mid, type) {
  */
 function loadCore() {
 	var modules = getActiveModules(),
-		module, options, option, i;
+		module, options, option, i, alias;
 
 	for (i = 0; i < modules.length; i += 1) {
 		options = modules[i].split(':');
