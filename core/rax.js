@@ -131,24 +131,24 @@ function boot(port) {
 	// @DEV user/session test middleware
 	//Rax.server.use(Rax.middleware.checkSessionUser());
 	Rax.server.use(function (req, res, next) {
+		// @TODO put these in the pipeline instead ???
 		Rax.active.req = req;
 		Rax.active.res = res;
 		
 		// if session exists, see if a user is associated
 		if (req.session && req.session.user && req.session.user !== 'anonymous') {
-			Rax.user.get({ 'name': req.session.user }, function (err, instance) {
-				Rax.active.user = instance;
+			Rax.user.get({ 'name': req.session.user }, function (err, user) {
+				Rax.active.user = user;
 				next();
 			});
 		} else {
-			Rax.log('no session cookie for this user... login');
-			Rax.active.user = 'anon';
+			Rax.active.user = 'anon'; // @TODO provide anonymous user shell
 			next();
 		}
 	});
 
 	// lastly, connect router & the routes map
-	Rax.server.use(connect.bodyParser());
+	Rax.server.use(connect.bodyParser()); // needed for forms processing
 	Rax.server.use(Rax.router(core.routes));
 
 	// listen!
@@ -202,7 +202,7 @@ function loadCore() {
 
 		if (module.indexOf('/') !== -1) {
 			if (!options || options[0].indexOf('alias') === -1) {
-				continue; // complex requirements must provide an alias for themselves
+				continue; // complex requirements must provide an alias for themselves ('database/someDbHelper:alias=myDbHelper')
 			}
 
 			alias = options[0].split('=')[1];
@@ -231,6 +231,7 @@ function loadAddons() {
 		if (options.length > 1) {
 			module = options.shift();
 		} else {
+			// no options
 			module = options[0];
 		}
 

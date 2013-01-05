@@ -45,7 +45,7 @@ module.exports = function (connect) {
 	 */
 	function RaxStore(options, callback) {
 		var self = this, dbUrl;
-		
+
 		this.collection = sessions;
 
 		if (typeof options.stringify === 'undefined' || options.stringify) {
@@ -65,8 +65,6 @@ module.exports = function (connect) {
 	 */
 	RaxStore.prototype.get = function (sid, cb) {
 		var self = this;
-
-		console.log('get sess?', sid);
 
 		cb = cb || defaultCb;
 
