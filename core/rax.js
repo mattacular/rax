@@ -53,10 +53,12 @@ Rax = module.exports = {
 */
 
 // set an absolute reference to Rax core so other modules can require() it easily
-global.rax_core = Rax.root + '/core/rax.js';
+global.RAX = Rax.root + '/core/rax.js';
 
 function init() {
+	// *REMEMBER* not safe to use Rax logging module yet (ONLY IN THIS FUNC!)
 	console.log('[Rax] Init'.cyan);
+
 	// load base modules (beacon API and database API)
 	Rax.beacon = loadModule('beacon');
 	console.log('[Rax] Connecting to database...'.cyan);
@@ -76,7 +78,7 @@ function init() {
 function boot(port) {
 	var sessionStore; // will hold instance of the DB session storage class
 
-	loadCore();		// load enabled core modules
+	loadCore();		// load enabled core modules that are not deferred
 	Rax.beacon.emit('coreLoaded');
 
 	// shortcuts for boot messaging
@@ -87,10 +89,10 @@ function boot(port) {
 	Rax.log(('[Rax] Booting...').cyan);
 
 	info('Loading addon modules...');
-	loadAddons();	// load enabled addon modules
+	loadAddons();	// load enabled addon modules that are not deferred
 	Rax.beacon.emit('addonsLoaded');
 
-	// start server
+	// begin server
 	info('Starting server...');
 	Rax.server = connect.createServer();
 
@@ -113,16 +115,16 @@ function boot(port) {
 		Rax.server.use(connect.logger());
 	}
 
-	// this returns a constructor for our DB session store that connect's own session middleware needs
+	// this returns a constructor for Rax's DB session store that connect's own session middleware will utilize
 	sessionStore = new RaxStore(connect);	
 
-	// session middleware
+	// session middleware (@TODO this should be optional, not ALL sites need session-tracking)
 	Rax.server.use(connect.cookieParser());
 	Rax.server.use(connect.session({
-		'secret': 'RaxOnRaxOnRax',
+		'secret': 'RaxOnRaxOnRax',	// @TODO replace with session secret through admin dash/db cfg
 		'store': new sessionStore({ 'db': 'test' }),
 		'cookie': { 
-			'maxAge': 60000 * 30
+			'maxAge': 60000 * 30 // idle sessions are good for 30 minutes
 		}
 	}));
 
