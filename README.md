@@ -7,7 +7,7 @@ Want to help develop this project? Read about it below and if you think you're s
 
 About
 -----
-Rax is the codename for a highly modular, highly sophisticated CMS envisioned for NodeJS. Its design is inspired by the simplicity of Wordpress fused with the power and of Drupal. The result will be a true editorial engine, the first of its kind! What does this mean? Being an editorial engine means that Rax is engineered from the ground up with both developers *AND* editorial staff in mind. This warrants essentially a two-pronged approach when it comes to features. 
+Rax is the codename for a highly modular, highly sophisticated CMS envisioned for NodeJS. Its design is inspired by the simplicity of Wordpress fused with the power of Drupal fully available under the hood. Our goal is to allow it to be as simple or as advanced as the developer or content creators need. The result will be a true editorial engine for Node, maybe the first of its kind! What does this mean? Being an editorial engine means that Rax is engineered from the ground up with both developers *AND* editorial staff in mind. This warrants essentially a two-pronged approach when it comes to features:
 
 **For editors:** Rax's frontend UI must be state of the art and intuitive with features like inline editing, collaboration (via web sockets), and live preview.
 
