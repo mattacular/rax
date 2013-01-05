@@ -15,7 +15,7 @@ var Rax,							// main app object (public)
 	fs = require('fs'),
 	colors = require('colors'),
 	async = require('async'),
-	sessionStore = require('connect-mongo')(connect),
+	SessionStore,
 	connections = 0,
 	modules, cfg,
 	warn, error, info;
@@ -74,6 +74,8 @@ function init() {
 }
 
 function boot(port) {
+	var sessionStore; // will hold instance of the DB session storage class
+
 	loadCore();		// load enabled core modules
 	Rax.beacon.emit('coreLoaded');
 
@@ -111,11 +113,14 @@ function boot(port) {
 		Rax.server.use(connect.logger());
 	}
 
+	// this returns a constructor for our DB session store that connect's own session middleware needs
+	sessionStore = new SessionStore(connect);	
+
 	// session middleware
 	Rax.server.use(connect.cookieParser());
 	Rax.server.use(connect.session({
 		'secret': 'RaxOnRaxOnRax',
-		'store': new sessionStore({'db': 'test'}),
+		'store': new sessionStore({ 'db': 'test' }),
 		'cookie': { 
 			'maxAge': 60000 * 30
 		}
@@ -178,6 +183,10 @@ function loadCore() {
 	var modules = getActiveModules(),
 		module, options, option, i, alias;
 
+	// load the session storage class first, no need to expose it in any way
+	SessionStore = loadModule('database/session');
+
+	// load rest of core modules
 	for (i = 0; i < modules.length; i += 1) {
 		options = modules[i].split(':');
 
@@ -264,5 +273,5 @@ deferLoad - this module can be loaded after the server has booted
 
 */
 function getActiveModules() {
-	return ['database/session', 'logging', 'user', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
+	return ['logging', 'user', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
 }
