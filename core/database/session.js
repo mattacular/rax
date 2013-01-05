@@ -5,20 +5,19 @@ var Rax = require('../rax'),
 	mongoose = require('mongoose'),
 	sessions = false;
 
-/*
-	Connect's session model ('session' field is a serialized cookie) - 
-	{
-		"_id" : "499RnRBMiGQNmh5rE3hWvpZC",
-		"session" : "{\"cookie\":{\"originalMaxAge\":1800000,\"expires\":\"2013-01-05T20:24:23.633Z\",\"httpOnly\":true,\"path\":\"/\"}}",
-		"expires" : ISODate("2013-01-05T20:24:23.633Z")
-	}
-*/
-
 /* beacon events */
 Rax.beacon.once('coreLoaded', init);
 
 /* init - setup session model etc */
 function init() {
+	/*
+		Connect's session model ('session' field is a serialized cookie) - 
+		{
+			"_id" : "499RnRBMiGQNmh5rE3hWvpZC",
+			"session" : "{\"cookie\":{\"originalMaxAge\":1800000,\"expires\":\"2013-01-05T20:24:23.633Z\",\"httpOnly\":true,\"path\":\"/\"}}",
+			"expires" : ISODate("2013-01-05T20:24:23.633Z")
+		}
+	*/
 	var sessionSchema = mongoose.Schema({
 		'_id': String,
 		'session': String,
@@ -28,24 +27,25 @@ function init() {
 	sessions = mongoose.model('Session', sessionSchema, 'sessions');
 }
 
+/**
+ *	Rax DB Session Storage Driver (RaxStore)
+ *		Main component of this module. Satisfies Connect's Session middleware API 
+ *		to utilize MongoDB for storage.
+ *	
+ *		This is a constructor that itself returns another constructor, which is 
+ *		the finished driver, endowed with all off the necessary methods, and
+ *		ready to feed to Connect's Session middleware for usage.
+ */
 module.exports = function (connect) {
 	var Store = connect.session.Store,
 		defaultCb = function () {};
 
-		console.log(typeof Store.prototype);
-
 	/**
-	 *	Initialize MongoStore
+	 *	Initialize RaxStore
 	 */
-	function MongoStore(options, callback) {
-		var self = this,
-			dbUrl, mongoosePs;
-
-		options = options || { 'db': 'test' };
-		callback = callback || function () {};
-
-		Store.call(this, options);
-
+	function RaxStore(options, callback) {
+		var self = this, dbUrl;
+		
 		this.collection = sessions;
 
 		if (typeof options.stringify === 'undefined' || options.stringify) {
@@ -56,13 +56,14 @@ module.exports = function (connect) {
 		}
 	}
 
-	// inherit the Connect session store's prototype
-	MongoStore.prototype.__proto__ = Store.prototype;
+	// IMPORTANT: inherit the Connect session middleware's store prototype 
+	// (provides skeleton methods that don't need customizing)
+	RaxStore.prototype.__proto__ = Store.prototype;
 
 	/*
 	 *	Implementation of Session.get()
 	 */
-	MongoStore.prototype.get = function (sid, cb) {
+	RaxStore.prototype.get = function (sid, cb) {
 		var self = this;
 
 		console.log('get sess?', sid);
@@ -100,7 +101,7 @@ module.exports = function (connect) {
 	/*
 	 *	Implementation of Session.set()
 	 */
-	MongoStore.prototype.set = function (sid, session, cb) {
+	RaxStore.prototype.set = function (sid, session, cb) {
 		var newSession;
 
 		cb = cb || defaultCb;
@@ -123,7 +124,7 @@ module.exports = function (connect) {
 	/*
 	 *	Implementation of Session.destroy()
 	 */
-	MongoStore.prototype.destroy = function (sid, cb) {
+	RaxStore.prototype.destroy = function (sid, cb) {
 		cb = cb || defaultCb;
 
 		this.collection.remove({ '_id': sid }, cb);
@@ -132,7 +133,7 @@ module.exports = function (connect) {
 	/*
 	 *	Implementation of Session.length()
 	 */
-	MongoStore.prototype.length = function (cb) {
+	RaxStore.prototype.length = function (cb) {
 		cb = cb || defaultCb;
 
 		this.collection.count({}, cb);
@@ -141,11 +142,11 @@ module.exports = function (connect) {
 	/*
 	 *	Implementation of Session.clear()
 	 */
-	MongoStore.prototype.clear = function (cb) {
+	RaxStore.prototype.clear = function (cb) {
 		cb = cb || defaultCb;
 
 		this.collection.drop(cb);
 	};
 
-	return MongoStore;
+	return RaxStore;
 };

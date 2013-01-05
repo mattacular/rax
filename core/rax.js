@@ -15,7 +15,7 @@ var Rax,							// main app object (public)
 	fs = require('fs'),
 	colors = require('colors'),
 	async = require('async'),
-	SessionStore,
+	RaxStore,
 	connections = 0,
 	modules, cfg,
 	warn, error, info;
@@ -114,7 +114,7 @@ function boot(port) {
 	}
 
 	// this returns a constructor for our DB session store that connect's own session middleware needs
-	sessionStore = new SessionStore(connect);	
+	sessionStore = new RaxStore(connect);	
 
 	// session middleware
 	Rax.server.use(connect.cookieParser());
@@ -183,8 +183,9 @@ function loadCore() {
 	var modules = getActiveModules(),
 		module, options, option, i, alias;
 
-	// load the session storage class first, no need to expose it in any way
-	SessionStore = loadModule('database/session');
+	// load Rax's session storage class separately. it is so low level that it does not
+	// need to be exposed to the core objects in any way
+	RaxStore = loadModule('database/session');
 
 	// load rest of core modules
 	for (i = 0; i < modules.length; i += 1) {
