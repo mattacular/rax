@@ -23,6 +23,7 @@ Feature Brainstorming/Spec
 --------------------------
 * Router API
 	- app-safe wrapper for Escort (https://github.com/ckknight/escort)
+	- I like the syntax for this router and it seems to be very performance-oriented. This will serve as Rax's router unless we find something better or need to roll our own.
 * Forms API
 	- custom
 	- allows modules to provide forms to templates
@@ -38,7 +39,10 @@ Feature Brainstorming/Spec
 					'structure': {
 						'picture_description': {
 							'type': 'textfield',
-							'title': 'Description'
+							'title': 'Description',
+							'weight': 0,
+							'prefix': '',
+							'suffix': ''
 						}
 					},
 					'handlers': {
@@ -52,11 +56,13 @@ Feature Brainstorming/Spec
 
 * Templating API
 	- utilizes Handlebars (HTML) and LESS (CSS) (maybe allow extensibility here in the future?)
-	- 'blocks' system defineBlock() putBlock()
-	- themes are made up of 1 or more templates + 1 or more stylesheets (?)
+	- 'blocks' system defineBlock() putBlock() ?? (v2+)
+	- themes are made up of the main templates and can provide their own custom subtemplates etc.
+	- modules and themes alike can provide templates
 	- some templates are required. if active theme does not have required templates, they are inherited from the base theme?
-	- bindModel() ?
+	- model binding... bindModel() how?
 	- stock templates: (highly extensible) [(global) = available to other templates as Handlebars helper]
+		- **page templates** vs **global templates** (aka ***subtemplates***)
 		- (global) htmlHead - <head/>
 		- (global) htmlFoot - just before </body>
 		- (global) contentHead - content heading to be used on most other pages (eg. heading logo, navbar etc)
@@ -85,7 +91,7 @@ Feature Brainstorming/Spec
 		- image
 		- video
 		- audio
-	- ex. article
+	- ex. article (a more advanced 'post' content type)
 		base-type: 'text'
 * Core Modules (some are required unless a supported replacement is also present)
 	- Post (provides a highly configurable post content-type, Rax.posts.addType('article', fields) or Rax.posts.addType('blog', fields))
@@ -99,7 +105,7 @@ Feature Brainstorming/Spec
 	- Feed (for RSS feeds of RAX content etc)
 	- Analytics
 	- Social Sharing (ugh ?)
-* How to handle media?
+* How to handle media uploads and serving?
 * Storage API (has options that combine local storage, where supported with DB persistence)
 * AJAX modes on front-end (none - medium - full)
 * User API
@@ -132,30 +138,42 @@ Feature Brainstorming/Spec
 		+ have access to all core APIs
 		+ can be used in place of core modules
 * DB Support
-	- MongoDB w/Mongoose
-	- (maybe) MySQL
-	- (nice to have) PostgreSQL
+	- initially just MongoDB w/Mongoose
+	- (eventually maybe) MySQL
+	- (eventually nice to have) PostgreSQL
 * Utilities
 	- Minification
 	- Packaging
 	- Build systems?
 	- Pre-compilation of templates
 
-Recommended Server Setup
-------------------------
-Node is unique in that it is its own webserver. It can server static files and requests all by itself! However, certain size sites may benefit from alternate setups.
-For taking full advantage of Rax's functionality AND retaining full control over performance aspects w/avenues for effective scalability here is the recommended stack:
+Recommended Server Setups
+-------------------------
+Node is unique in that it is its own webserver. It can serve static files and requests all by itself! However, certain size sites may benefit from alternate setups.
+Rax automatically manages a link between the active theme's own directory and a generic directory - /rax/theme/active (the symlink itself) so that you can setup Nginx to serve the theme's static files as well! Of course, Node will be packaged with examples configs for all the parts of the stack. For taking full advantage of Rax's functionality AND retaining full control over performance aspects w/avenues for effective scalability here is the recommended stack:
 
-* Varnish in front
+**FULL-FEATURED**
+* Varnish
 	- cache layer
-	- directs websocket traffic straight to Rax running on Node server (allows for real-time editing)
+	- directs websocket traffic straight to Rax running on Node server (still allows for real-time editing)
 	- all other traffic to Nginx server
-* Nginx Reverse Proxy
+* Nginx
+	- services static requests (via wildcard match) from /www/public_html (for example)
+	- serves theme assets from @ /www/rax/theme/active
+	- proxy all other requests to Rax app running on Node server (/)
+* Rax (Node.js)
+	- services all dynamic requests
+
+**LITE-FEATURED** (no websockets/realtime admin interface)
+* Nginx
+	- services static requests (via wildcard match) from /www/public_html
+	- serves theme assets from symlink @ /www/rax/theme/active
+	- proxy all other requests to Rax app running on Node server (/)
+* Rax (node.js)
 	- services static requests (via wildcard match) from /www/public_html
 	- serves theme assets from /www/rax/theme/active
 	- proxy all other requests to Rax app running on Node server (/)
-* Rax on Node.js
-	- services all dynamic requests
+	- services all other dynamic requests
 
 3rd Party Module Spec (Rax Modules)
 ---------------------
