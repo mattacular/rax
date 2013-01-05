@@ -10,13 +10,14 @@ var Rax = ('./rax'),
 /*
 Event names follow this format:
 
-<category>:<temporal prefix>-<action>
+<category>:[<temporal prefix>-]<action>
 
 */
 emitter.setMaxListeners(0);
 eventMap = {
-	'core': ['core:pre-start', 'core:pre-boot', 'core:post-start', 'core:post-init', 'core:db'],
-	'theme': ['theme:pre-load']
+	'core': ['pre-start', 'pre-boot', 'post-start', 'post-init'],
+	'db': ['pre-init', 'post-init'],
+	'theme': ['pre-load'] // eg. registered as 'theme:pre-load'
 }
 
 //emitter.on('newListener', function (event, cb) {});

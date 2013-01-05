@@ -45,15 +45,19 @@ routes = function () {
 		'post': function (req, res) {
 			if (req.body.user.pass) {
 				Rax.user.get({ 'name': req.body.user.name }, function (err, user) {
+					if (err || !user) {
+						Rax.log('Error, could not find user', req.body.user.name);
+
+						return Rax.toolkit.redirect();
+					}
+
 					user.comparePassword(req.body.user.pass, function (err, isMatch) {
-						Rax.log(req.body.user);
 						if (!isMatch) {
-							Rax.log('route back to login with failure');
-							res.writeHead(302, { 'Location': '/' });
-							res.end();
+							Rax.log('Bad password; route back to login with failure');
+
+							return Rax.toolkit.redirect();
 						} else {
 							req.session.user = user.name;
-
 
 							if (typeof req.body.user.persist === 'string' && req.body.user.persist === 'on') {
 								req.session.cookie.maxAge = 60000 * 60;
@@ -68,12 +72,12 @@ routes = function () {
 									}
 								], function () {
 									// after save is complete, redirect to index
-									res.writeHead(302, { 'Location': '/' });
-									res.end();
+									Rax.toolkit.redirect();
 								});
 							} else {
-								res.writeHead(302, { 'Location': '/' });
-								res.end();
+								req.session.save(function () {
+									Rax.toolkit.redirect();
+								});
 							}
 						}
 					});

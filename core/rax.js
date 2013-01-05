@@ -26,10 +26,12 @@ Rax = module.exports = {
 	'router': escort,
 	'async': async,
 	'cfg': {},
-	'active': {
+	'active': {	// some of these are per-request ???
 		'theme': false,
 		'session': false,
-		'user': false
+		'user': false,
+		'req': false,
+		'res': false
 	},
 	'modules': {},	// addon module store
 	'root': process.cwd()
@@ -54,8 +56,10 @@ Rax = module.exports = {
 global.rax_core = Rax.root + '/core/rax.js';
 
 function init() {
+	console.log('[Rax] Init'.cyan);
 	// load base modules (beacon API and database API)
 	Rax.beacon = loadModule('beacon');
+	console.log('[Rax] Connecting to database...'.cyan);
 	Rax.db = loadModule('database/mongo');
 
 	// as soon as Rax config has been loaded from DB, start main bootstrap
@@ -77,7 +81,7 @@ function boot(port) {
 	info = Rax.logging.info;
 	warn = Rax.logging.warn;
 	error = Rax.logging.error;
-	Rax.log(('[Rax] Core modules loaded.').cyan);
+	Rax.log(('[Rax] Core modules loaded').cyan);
 	Rax.log(('[Rax] Booting...').cyan);
 
 	info('Loading addon modules...');
@@ -98,23 +102,33 @@ function boot(port) {
 
 	// serve theme's static files
 	Rax.server.use(connect.static(Rax.root + '/themes/' + cfg.ACTIVE_THEME, { maxAge: 1000 }));
-	Rax.server.use(connect.favicon());
-	Rax.server.use(connect.query());
+
+	// register other helper middleware
+	Rax.server.use(connect.favicon());	// provide favicon
+	Rax.server.use(connect.query());	// parse query string into req obj
+
+	if (cfg.ENABLE_REQUEST_LOGGING) {
+		Rax.server.use(connect.logger());
+	}
 
 	// session middleware
 	Rax.server.use(connect.cookieParser());
 	Rax.server.use(connect.session({
 		'secret': 'RaxOnRaxOnRax',
-		'store': new sessionStore({'db': 'test'})
+		'store': new sessionStore({'db': 'test'}),
+		'cookie': { 
+			'maxAge': 60000 * 30
+		}
 	}));
 
 	// @DEV user/session test middleware
 	//Rax.server.use(Rax.middleware.checkSessionUser());
 	Rax.server.use(function (req, res, next) {
+		Rax.active.req = req;
+		Rax.active.res = res;
+		
 		// if session exists, see if a user is associated
 		if (req.session && req.session.user && req.session.user !== 'anonymous') {
-			Rax.log('logging in...', req.session.user);
-
 			Rax.user.get({ 'name': req.session.user }, function (err, instance) {
 				Rax.active.user = instance;
 				next();
@@ -125,10 +139,6 @@ function boot(port) {
 			next();
 		}
 	});
-
-	if (cfg.ENABLE_REQUEST_LOGGING) {
-		Rax.server.use(connect.logger());
-	}
 
 	// lastly, connect router & the routes map
 	Rax.server.use(connect.bodyParser());
@@ -248,6 +258,11 @@ function getActiveAddonModules() {
 }
 
 // @TODO temp function
+/*
+options - private (module will not be publicly available on the Rax app obj)
+deferLoad - this module can be loaded after the server has booted
+
+*/
 function getActiveModules() {
-	return ['logging', 'user', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
+	return ['database/session', 'logging', 'user', 'post', 'toolkit', 'theme', 'routes:private'];	// note that private modules cannot expose routes etc. to the app
 }

@@ -1,1 +1,1 @@
-var rax = require('./core/rax.js').init();
+require('./core/rax.js').init();

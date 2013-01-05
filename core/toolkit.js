@@ -107,3 +107,18 @@ Toolkit.seek = Rax.seek = function (input) {
 		Reads contents of file if exists
 	*/
 }
+
+Toolkit.goto = Toolkit.redirect = function (dest) {
+	var res;
+
+	dest = dest || '/';
+
+	if (!Rax.active.res) {
+		return false;
+	} else {
+		res = Rax.active.res;
+	}
+
+	res.writeHead(302, { 'Location': dest });
+	res.end();
+}

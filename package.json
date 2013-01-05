@@ -1,6 +1,6 @@
 {
 	"name": "rax",
-	"description": "Editorial engine; a highly modular and sophisticated NodeJS CMS",
+	"description": "The editorial engine; a highly modular and sophisticated NodeJS CMS",
 	"version": "0.0.1",
 	"homepage": "http://www.github.com/mattacular/rax",
 	"repository": {
