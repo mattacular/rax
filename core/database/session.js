@@ -47,13 +47,6 @@ module.exports = function (connect) {
 		var self = this, dbUrl;
 
 		this.collection = sessions;
-
-		if (typeof options.stringify === 'undefined' || options.stringify) {
-			this.serializeSession = JSON.stringify;
-			this.unserializeSession = JSON.parse;
-		} else {
-			this.serializeSession = this.unserializeSession = function(x) { return x; };
-		}
 	}
 
 	// IMPORTANT: inherit the Connect session middleware's store prototype 
@@ -80,7 +73,7 @@ module.exports = function (connect) {
 				if (session) {
 
 					if (!session.expires || new Date() < session.expires) {
-						cb(null, self.unserializeSession(session.session));
+						cb(null, JSON.parse(session.session));
 					} else {
 						self.destroy(sid, cb);
 					}
@@ -106,7 +99,7 @@ module.exports = function (connect) {
 
 		try {
 			newSession = {
-				'session': this.serializeSession(session)
+				'session': JSON.stringify(session)
 			};
 
 			if (session && session.cookie && session.cookie._expires) {
