@@ -1,20 +1,50 @@
 { 
-	"core_modules": [
+	"modules": [
+		{
+			"name": "Rax",
+			"description": "Core app and server initialization module",
+			"required": true
+		},
 		{
 			"name": "Database Driver (MongoDB)",
 			"path": "database/mongo",
 			"description": "Maintains Rax app database and provides API",
 			"required": true,
 			"alias": "db",
-			"priority": 1,
 			"options": {}
 		},
 		{
-			"name": "Beacon",
-			"description": "Provides Beacon API, an event-based hook system for extending Rax",
-			"priority": 2,
-			"required": true,
+			"name": "Session Store (MongoDB)",
+			"path": "database/session",
+			"description": "Stores user sessions for sites using the User module.",
+			"required": false,
+			"alias": "session",
+			"deps": [
+				"user"
+			],
+			"options": {
+				"invisible": true
+			}
 		},
+		{
+			"name": "Routes",
+			"description": "Gathers routes from all loaded modules and couples them with their render callbacks.",
+			"required": true
+		},
+		{
+			"name": "Toolkit",
+			"description": "Provides miscellaneous toolkit/helper functions.",
+			"required": true
+		},
+		{
+			"name": "User",
+			"description": "Enables accounts for your users and allows them to sign-in for access to various parts of the app.",
+			"required": false,
+			"deps": [
+				"session",
+				"permission"
+			]
+		}
 		{
 			"name": "Logging",
 			"description": "Provides Logging API for both console and *.log-file control",
@@ -22,6 +52,14 @@
 			"options": {
 				"private": false,
 				"deferLoad": false
+			}
+		},
+		{
+			"name": "Post",
+			"description": "Main content authoring/posting module",
+			"required": true,
+			"options": {
+				"deferLoad": true
 			}
 		}
 	]
