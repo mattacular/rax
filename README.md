@@ -210,4 +210,4 @@ var Rax = require('../core/rax');
 	};
 
 	// Beacons API
-	Rax.beacon.on('', function () {});
+	Rax.on('', function () {});

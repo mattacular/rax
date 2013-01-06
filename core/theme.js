@@ -110,7 +110,7 @@ loadCfg = function (theme) {
 	return JSON.parse(raw);
 };
 
-Rax.beacon.once('init', function () {
+Rax.once('init', function () {
 	Rax.view = loadTheme(Rax.cfg.ACTIVE_THEME, {});	// load the active theme as soon as this module is enabled
 });
 

@@ -12,7 +12,7 @@ Database.identify = function () {
 // expose Mongoose methods
 Database.Schema = mongoose.Schema;
 Database.model = mongoose.model;
-Rax.beacon.once('dbLive', function () {
+Rax.once('dbLive', function () {
 	var cfgSchema = mongoose.Schema({
 		'_id': String,
 		'USE_STATIC_FILESERVER': Boolean,
@@ -44,7 +44,7 @@ Rax.beacon.once('dbLive', function () {
 			Rax.cfg = instance;
 		}
 
-		Rax.beacon.emit('dbHasConfig');
+		Rax.emit('dbHasConfig');
 	});
 
 });
@@ -54,6 +54,6 @@ mongoose.connect('mongodb://localhost/test');
 Database.ps = mongoose.connection;
 
 Database.ps.once('open', function () {
-	Rax.beacon.emit('dbLive');
+	Rax.emit('dbLive');
 });
 

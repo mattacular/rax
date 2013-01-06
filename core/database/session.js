@@ -6,7 +6,7 @@ var Rax = require('../rax'),
 	sessions = false;
 
 /* beacon events */
-Rax.beacon.once('coreLoaded', init);
+Rax.once('coreLoaded', init);
 
 /* init - setup session model etc */
 function init() {

@@ -27,7 +27,7 @@ User.routes = {
 	}
 };
 
-// Rax.beacon.on('init', function () {
+// Rax.on('init', function () {
 // 	// create reusable transport method (opens pool of SMTP connections)
 // 	var smtpTransport = nodemailer.createTransport("SMTP",{
 // 	    service: "Gmail",
@@ -61,7 +61,7 @@ User.routes = {
 
 // User.db = provide schema and models
 
-Rax.beacon.on('coreLoaded', function () {
+Rax.on('coreLoaded', function () {
 	// define user schema
 	var userSchema = Rax.schema = mongoose.Schema({
 		'name': String,

@@ -15,6 +15,8 @@ var Rax,							// main app object (public)
 	fs = require('fs'),
 	colors = require('colors'),
 	async = require('async'),
+	_ = require('underscore'),
+	EventEmitter = require('events').EventEmitter,
 	RaxStore,
 	connections = 0,
 	modules, cfg,
@@ -37,11 +39,14 @@ Rax = module.exports = {
 	'root': process.cwd()
 };
 
+// Rax app inherits from EventEmitter (Node's Events API powers much of Rax's extensibility)
+_.extend(Rax, EventEmitter.prototype);
+
 /*
-	Rax.pipeline spec - render pipeline can be altered anytime before res.end(). Contains
+	Rax Pipeline spec - render pipeline can be altered anytime before res.end(). Contains
 		models that will be run against templates at response-time.
 
-		Rax.pipeline.posts[0].headline = "LATEST:" + headline	// altering the first post's headline in the pipeline
+		Rax.pl.posts[0].headline = "LATEST:" + headline	// altering the first post's headline in the pipeline
 
 		Somewhat based on Drupal render arrays-ish?
 
@@ -60,12 +65,11 @@ function init() {
 	console.log('[Rax] Init'.cyan);
 
 	// load base modules (beacon API and database API)
-	Rax.beacon = loadModule('beacon');
 	console.log('[Rax] Connecting to database...'.cyan);
 	Rax.db = loadModule('database/mongo');
 
 	// as soon as Rax config has been loaded from DB, start main bootstrap
-	Rax.beacon.once('dbHasConfig', function () {
+	Rax.once('dbHasConfig', function () {
 		cfg = Rax.cfg;
 		boot(cfg.PORT);	// load rest of core and boot server
 	});
@@ -79,7 +83,7 @@ function boot(port) {
 	var sessionStore; // will hold instance of the DB session storage class
 
 	loadCore();		// load enabled core modules that are not deferred
-	Rax.beacon.emit('coreLoaded');
+	Rax.emit('coreLoaded');
 
 	// shortcuts for boot messaging
 	info = Rax.logging.info;
@@ -90,7 +94,7 @@ function boot(port) {
 
 	info('Loading addon modules...');
 	loadAddons();	// load enabled addon modules that are not deferred
-	Rax.beacon.emit('addonsLoaded');
+	Rax.emit('addonsLoaded');
 
 	// begin server
 	info('Starting server...');
@@ -160,7 +164,7 @@ function boot(port) {
 	delete Rax.server;
 
 	// bootstrap complete, safe for other modules to init
-	Rax.beacon.emit('init');
+	Rax.emit('init');
 	Rax.logging.c('[Rax] Booting complete. Rax is listening on ' + port + '...');
 	Rax.logging.c('[Rax] Active theme = ' + Rax.active.theme.name);
 }
