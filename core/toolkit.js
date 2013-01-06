@@ -59,31 +59,6 @@ Toolkit.isDef = Rax.isDef = function (obj, depths, retVal) {
 	return (retVal === 'prop') ? obj : true;
 };
 
-// doParallel([
-//     readFile('mylib.js'),
-//     readFile('secretplans.txt'),
-// ])(function (source, secrets) {
-//   // Do something
-// }, function (error) {
-//   // Handle Error
-// });
-Toolkit.doParallel = function (fns) {
-	var results = [],
-		counter = fns.length;
-
-	return function(callback, errback) {
-		fns.forEach(function (fn, i) {
-			fn(function (result) {
-				results[i] = result;
-				counter--;
-				if (counter <= 0) {
-					callback.apply(null, results);
-				}
-			}, errback);
-		});
-	}
-}
-
 /**
  *	seek()
  *		Rax file seek
@@ -106,7 +81,7 @@ Toolkit.seek = Rax.seek = function (input) {
 
 		Reads contents of file if exists
 	*/
-}
+};
 
 Toolkit.goto = Toolkit.redirect = function (dest) {
 	var res;
@@ -121,4 +96,60 @@ Toolkit.goto = Toolkit.redirect = function (dest) {
 
 	res.writeHead(302, { 'Location': dest });
 	res.end();
+};
+
+/**
+ *	stripTags()
+ *		Strips HTML tags from a given string
+ */
+Toolkit.stripTags = function (input) {
+	return (typeof input === 'string') ? input.replace(/<(?:.|\n)*?>/gm, '') : false;
+};
+
+// How to store RTF on posts in DB? Is it cheaper to store marked up bodies? Or come up with some sort of extraction/re-application of element scheme
+// like below:
+
+// OR! Internal vs. External content DBs. Internal DB 
+
+/*
+takes a 'body' and applies a 'map' to it
+@return formatted body
+*/
+Toolkit.applyFormat = function (body, map) {
+};
+
+/* ingests a post and creates a formatting map of all of its HTML tags for storage in the DB. 
+@returns (object)
+'body': stripped body
+'map': format map obj
+*/
+Toolkit.extractFormat = function () {
+	// would use npm 'html-parser' to assist
+};
+
+/*
+
+Format maps -
+
+Consider this post:
+
+<p>This is some <strong>sample text</strong>. You are using <a href="http://ckeditor.com/">CKEditor</a>.</p>
+
+Format map would decode to:
+
+Body:
+This is some sample text. You are using CKEditor.
+
+Cols map:
+1: {	// beginCol is key
+	't': 'p'
+	'e': 50
+}
+14: {
+	't': 'strong',
+	'e': 25
+}
+41: {
+	't': 'a href="#"',
+	'e': 49
 }
