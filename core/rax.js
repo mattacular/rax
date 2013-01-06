@@ -64,7 +64,7 @@ function init() {
 	// *REMEMBER* not safe to use Rax logging module yet (ONLY IN THIS FUNC!)
 	console.log('[Rax] Init'.cyan);
 
-	// load base modules (beacon API and database API)
+	// the database module is needed by all other core modules, load it first
 	console.log('[Rax] Connecting to database...'.cyan);
 	Rax.db = loadModule('database/mongo');
 
