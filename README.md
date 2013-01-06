@@ -114,7 +114,13 @@ Feature Brainstorming/Spec
 * Config
 	- can be managed via JSON in database
 	- can also be managed via GUI interface
-* Authoring Interface (extensible?)
+* Post API/Authoring Interface (extensible?)
+	- very rich text format options and powerful WYSIWYG design by CKEditor
+	- how to store though? 
+		* different formatting modes offered (w/full caveats and performance/storage implications detailed at the config screen)
+		* always separate body from HTML tags and store them in a format map
+		* this format map can then be run back against the body before being presented to the user by either the client
+		or the server depending on setup.
 	- uses sockets, supports inline editing (?)
 * Admin Interface
 	- uses sockets for realtime updates (should be feasible on pretty much any server setup since there won't be that many active editors at any given time, but maybe allow it to be turned off?)

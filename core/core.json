@@ -41,7 +41,7 @@
 			"description": "Enables accounts for your users and allows them to sign-in for access to various parts of the app.",
 			"required": false,
 			"deps": [
-				"session",
+				"database/session",
 				"permission"
 			]
 		}
