@@ -44,7 +44,7 @@
 				"database/session",
 				"permission"
 			]
-		}
+		},
 		{
 			"name": "Logging",
 			"description": "Provides Logging API for both console and *.log-file control",
