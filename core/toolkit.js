@@ -109,7 +109,7 @@ Toolkit.stripTags = function (input) {
 // How to store RTF on posts in DB? Is it cheaper to store marked up bodies? Or come up with some sort of extraction/re-application of element scheme
 // like below:
 
-// OR! Internal vs. External content DBs. Internal DB 
+// OR! Internal vs. External content DBs. Internal DB keeps format map and body separate. External DB stores marked up (rendered) posts?
 
 /*
 takes a 'body' and applies a 'map' to it

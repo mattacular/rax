@@ -30,3 +30,9 @@ Logs.log = Rax.log = function () {
 		console.log.apply(null, arguments);
 	}
 };
+
+// provide quick color logging too?
+Logs.clog = Rax.clog = function (msg, color) {
+	color = color || 'green';
+	cLog(msg, color);
+};

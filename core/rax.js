@@ -74,15 +74,15 @@ function init() {
 		boot(cfg.PORT);	// load rest of core and boot server
 	});
 
-	// remove this method from the Rax app object so that it cannot accidentally be run again
-	// after the app is already initialized
+	// remove the reference to this method from the Rax app object so that it cannot
+	// accidentally be run again after the app is already initialized
 	delete Rax.init;
 }
 
 function boot(port) {
-	var sessionStore; // will hold instance of the DB session storage class
+	var sessionStore;	// will hold instance of the DB session storage class
 
-	loadCore();		// load enabled core modules that are not deferred
+	loadCore();			// load enabled core modules that are not deferred
 	Rax.emit('coreLoaded');
 
 	// shortcuts for boot messaging
@@ -138,6 +138,7 @@ function boot(port) {
 		// @TODO put these in the pipeline instead ???
 		Rax.active.req = req;
 		Rax.active.res = res;
+		// setup pipeline here? Rax.pipeline.init();
 		
 		// if session exists, see if a user is associated
 		if (req.session && req.session.user && req.session.user !== 'anonymous') {
