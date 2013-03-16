@@ -14,6 +14,14 @@ Engine.extension = ".handlebars"; // file extension this template engine expects
  */
 Engine.compile = Handlebars.compile;
 
+Engine.render = function (type, model, cb) {
+	if (typeof Rax.view[type] === 'function') {
+		cb(null, Rax.view[type](model));
+	} else {
+		cb({ 'response': 'error', 'code': 3 }, null);
+	}
+};
+
 /*
  *	implementation of Engine.register()
  *		Register an include/global template (eg. any non-"top level" template)

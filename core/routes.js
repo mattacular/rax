@@ -32,9 +32,16 @@ routes = function () {
 
 	// protected routes (ie. cannot be violated by 3rd party modules)
 	this.get('index', '/', function (req, res) {
+		var retVal;
+
 		res.writeHeader(200, {"Content-Type": "text/html"});
-		res.write(Rax.theme.render('index', { 'showLogin': (Rax.active.user === 'anon') }));
-		res.end();
+
+		Rax.theme.render('index', { 'showLogin': (Rax.active.user === 'anon') }, function (err, html) {
+			if (!err) {
+				res.write(html);
+				res.end();
+			}
+		});
 	});
 
 	this.bind('login', '/login', {

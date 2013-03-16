@@ -150,7 +150,8 @@ Rax.once('init', function () {
 	Rax.view = loadTheme(Rax.cfg.ACTIVE_THEME, {});	// load the active theme as soon as this module is enabled
 });
 
-Theme.render = function (type, options) {
+Theme.rcache = {} // render cache
+Theme.render = function (type, options, cb) {
 	var model;
 	type = type || 'index';
 	model = {
@@ -159,7 +160,18 @@ Theme.render = function (type, options) {
 		'options': options
 	};
 
-	if (typeof Rax.view[type] === 'function') {
-		return Rax.view[type](model);
+	if (typeof Theme.rcache[type] === 'undefined') { //&& Theme.rcache[type].expires > Date.now())
+		Theme.engine.render(type, model, function (err, rendered) {
+			if (!err) {
+				// cache the rendered page
+				Theme.rcache[type] = rendered;
+				// pass it along to the caller's cb
+				cb(null, rendered);
+			} else {
+				cb(err, null);
+			}
+		});
+	} else {
+		cb(null, Theme.rcache[type]);
 	}
 };
