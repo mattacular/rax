@@ -3,7 +3,7 @@
 	"author": "mattacular",
 	"description": "RAX Foundation theme (ie. the stock experience), supported by Bootstrap",
 	"version": "0.0.1",
-	"engine": "Handlebars",
+	"engine": "handlebars",
 	"templates": {
 		"hero": true,
 		"module_template": "/modules/glados/testing.handlebars",

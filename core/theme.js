@@ -8,7 +8,25 @@ var Theme = module.exports = {},
 	_ = require('underscore'),
 	loadTheme,
 	loadCfg,
+	listEngines,
+	engine,
 	register;
+
+listEngines = Theme.listEngines = function () {
+	var engineFiles = fs.readdirSync(Rax.root + '/core/templating'),
+		engineIds = [],
+		i;
+
+	for (i = 0; i < engineFiles.length; i += 1) {
+		engineIds.push(engineFiles[i].split('engine-')[1].replace(/\.js/, ''));
+	}
+
+	return engineIds;
+};
+
+loadEngine = function (engineId) {
+	return require(Rax.root + '/core/templating/engine-' + engineId + '.js');
+};
 
 loadTheme = Theme.loadTheme = function (theme, options) {
 	var templates = {
@@ -19,18 +37,26 @@ loadTheme = Theme.loadTheme = function (theme, options) {
 				'path': '/themes/foundation/htmlHead.handlebars'
 			}
 		}, 
-		index, themeCfg, parentModule, moduleTemplate, moduleVars, pieces, i, login;
+		index, themeCfg, parentModule, moduleTemplate, moduleVars, pieces, i, login, extension;
 
 	theme = theme || Rax.cfg.ACTIVE_THEME;
 
 	// get theme config
 	themeCfg = Rax.active.theme = loadCfg();
 
+	if (_.indexOf(listEngines(), themeCfg.engine) === -1) {
+		Rax.clog('fail!', 'red');
+		return 2; // return error code 2: unsupported engine
+	} else {
+		Theme.engine = engine = loadEngine(themeCfg.engine);
+		extension = engine.extension;
+	}
+
 	Rax.logging.g('Loading active theme "' + themeCfg.name + '"');
 	
 	// add any custom templates defined in the theme config to the templates manifest
 	_.each(themeCfg.templates, function (path, name) {
-		// if no path is explicitly defined, assume the template resides in the base theme dir
+		// if no path is explicitly defined, we assume the template resides in the base theme dir
 		templates[name] = (typeof path !== 'string') ? { 'path': '/themes/foundation/' + name + '.handlebars' } : { 'path': path };
 	});
 
@@ -105,9 +131,14 @@ loadCfg = function (theme) {
 	var raw;
 
 	theme = theme || Rax.cfg.ACTIVE_THEME;
-	raw = fs.readFileSync(Rax.root + '/themes/foundation/theme.json');
+	raw = fs.readFileSync(Rax.root + '/themes/' + theme + '/theme.json');
 
 	return JSON.parse(raw);
+};
+
+// implementation of 'errors' reserved prop
+Theme.errors = {
+	2: 'Active theme ("' + Rax.cfg.ACTIVE_THEME + '") requested an engine that is not supported.'
 };
 
 Rax.once('init', function () {

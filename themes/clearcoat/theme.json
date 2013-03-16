@@ -1,0 +1,17 @@
+{
+	"name": "Clearcoat",
+	"author": "mattacular",
+	"description": "Foundation theme (ie. the stock experience) re-written for Dust, still supported by Bootstrap",
+	"version": "0.0.1",
+	"engine": "dust",
+	"templates": {
+		"hero": true,
+		"module_template": "/modules/glados/testing.handlebars",
+		"login": true
+	},
+	"variables": {
+		"raxVersion": "0.0.1",
+		"bootstrapJS": "@parent/assets/js/bootstrap.js"
+	},
+	"parent": ["foundation"]
+}
