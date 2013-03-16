@@ -9,6 +9,8 @@ var Theme = module.exports = {},
 	loadTheme,
 	loadCfg,
 	listEngines,
+	loadEngine,
+	getCoreTemplateManifest,
 	engine,
 	register;
 
@@ -28,21 +30,22 @@ loadEngine = function (engineId) {
 	return require(Rax.root + '/core/templating/engine-' + engineId + '.js');
 };
 
+getCoreTemplateManifest = function () {
+	return [
+		'contentHead',
+		'htmlHead'
+	]
+};
+
 loadTheme = Theme.loadTheme = function (theme, options) {
-	var templates = {
-			'contentHead': {
-				'path': '/themes/foundation/contentHead.handlebars'
-			},
-			'htmlHead': { 
-				'path': '/themes/foundation/htmlHead.handlebars'
-			}
-		}, 
-		index, themeCfg, parentModule, moduleTemplate, moduleVars, pieces, i, login, extension;
+	var templates = {},
+		index, themeId, themeCfg, manifest, parentModule, moduleTemplate, moduleVars, pieces, i, login, extension;
 
 	theme = theme || Rax.cfg.ACTIVE_THEME;
 
 	// get theme config
 	themeCfg = Rax.active.theme = loadCfg();
+	themeId = themeCfg.name.toLowerCase();
 
 	if (_.indexOf(listEngines(), themeCfg.engine) === -1) {
 		Rax.clog('fail!', 'red');
@@ -52,49 +55,34 @@ loadTheme = Theme.loadTheme = function (theme, options) {
 		extension = engine.extension;
 	}
 
-	Rax.logging.g('Loading active theme "' + themeCfg.name + '"');
+	Rax.clog('Loading active theme "' + themeCfg.name + '" using the [' + themeCfg.engine + '] engine...');
+
+	// establish 'core templates' loading manifest for this theme
+	manifest = getCoreTemplateManifest();
+
+	for (i = 0; i < manifest.length; i += 1) {
+		templates[manifest[i]] = {
+			'path': '/themes/' + themeId + '/' + manifest[i] + extension
+		}
+	}
 	
 	// add any custom templates defined in the theme config to the templates manifest
 	_.each(themeCfg.templates, function (path, name) {
 		// if no path is explicitly defined, we assume the template resides in the base theme dir
-		templates[name] = (typeof path !== 'string') ? { 'path': '/themes/foundation/' + name + '.handlebars' } : { 'path': path };
+		templates[name] = (typeof path !== 'string') ? { 'path': '/themes/' + themeId + '/' + name + extension } : { 'path': path };
 	});
 
 	// compile top-level templates (aka pages)
-	index = fs.readFileSync(Rax.root + '/themes/foundation/index.handlebars', 'utf8');
-	index = Handlebars.compile(index);
+	index = fs.readFileSync(Rax.root + '/themes/' + themeId + '/index' + extension, 'utf8');
+	index = Theme.engine.compile(index);
 
-	login = fs.readFileSync(Rax.root + '/themes/foundation/login.handlebars', 'utf8');
-	login = Handlebars.compile(login);
+	login = fs.readFileSync(Rax.root + '/themes/' + themeId + '/login' + extension, 'utf8');
+	login = Theme.engine.compile(login);
 
-	// register all templates as Handlebars helpers
+	// register all include templates (eg. as Handlebars helpers)
 	_.each(templates, function (template, name) {
 		Rax.logging.g('Registering theme template "' + name + '" (' + template.path + ')');
-		// read in and compile each template
-		template.content = fs.readFileSync(Rax.root + template.path, 'utf8');
-		template.content = Handlebars.compile(template.content);
-
-		// if module template, compile against module source
-		if (template.path.match(/\/modules\//)) {
-			// @TODO replace with a regex cap...
-			pieces = template.path.split('/');
-			parentModule = pieces[2];
-			moduleTemplate = pieces[(pieces.length - 1)].replace(/\.handlebars/, '');
-
-			// ensure that module is enabled otherwise it needs to be enabled
-			if (Rax.isDef(Rax.modules, [parentModule, 'variables', moduleTemplate])) {
-				moduleVars = Rax.modules[parentModule].variables;
-			} else {
-				moduleVars = themeCfg.variables;
-			}
-			_.extend(moduleVars, options);
-			Rax.log(moduleVars);
-			register(name, parentModule, template.content, moduleVars);
-		} else {
-			parentModule = themeCfg.name;
-			_.extend(themeCfg.variables, options);
-			register(name, parentModule, template.content, themeCfg.variables);
-		}
+		registerInclude(name, templatePath);
 	});
 
 	// return compiled templates
@@ -109,8 +97,30 @@ loadTheme = Theme.loadTheme = function (theme, options) {
  *	@alias addGlobal()
  *		Registers a global template
  */
-Theme.register = Theme.addGlobal = register = function (templateId, dependentId, template, model) {
-	model = model || {};
+Theme.registerInclude = registerInclude = function (name, path) {
+	var pieces, parentModule, modulesVars;
+
+	if (template.path.match(/\/modules\//)) {
+		pieces = template.path.split('/');
+		parentModule = pieces[2];
+		moduleTemplate = pieces[(pieces.length - 1)].replace(new RegExp('\\' + Theme.engine.extension), '');
+
+		// ensure module that own's the requested include template is enabled
+		if (Rax.isDef(Rax.modules, [parentModule, 'variables', moduleTemplate])) {
+			moduleVars = Rax.modules[parentModule].variables;
+		} else {
+			moduleVars = themeCfg.variables;
+		}
+	} else {
+		moduleVars = themeCfg.variables;
+	}
+
+	_.extend(moduleVars, options);
+
+	fs.readFile(Rax.root + path, 'utf8', function (err, data) {
+		Theme.engine.register(name, data, moduleVars);
+	});
+
 
 	/*
 	 *	if 'templateId' has already been registered in the system,
