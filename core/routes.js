@@ -36,11 +36,15 @@ routes = function () {
 
 		res.writeHeader(200, {"Content-Type": "text/html"});
 
+		// Theme.render() is async, regardless of whether the engine supports it
 		Rax.theme.render('index', { 'showLogin': (Rax.active.user === 'anon') }, function (err, html) {
 			if (!err) {
 				res.write(html);
-				res.end();
+			} else {
+				Rax.log(err);
+				res.write('Houston, we have a problem.');
 			}
+			res.end();
 		});
 	});
 
@@ -60,7 +64,7 @@ routes = function () {
 
 					user.comparePassword(req.body.user.pass, function (err, isMatch) {
 						if (!isMatch) {
-							Rax.log('Bad password; route back to login with failure');
+							Rax.clog('Bad password; route back to login with failure');
 
 							return Rax.toolkit.redirect();
 						} else {
