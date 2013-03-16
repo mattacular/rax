@@ -126,7 +126,7 @@ function boot(port) {
 	Rax.server.use(connect.cookieParser());
 	Rax.server.use(connect.session({
 		'secret': 'RaxOnRaxOnRax',	// @TODO replace with session secret through admin dash/db cfg
-		'store': new sessionStore({ 'db': 'test' }),
+		'store': new sessionStore({ 'db': 'sessions' }),
 		'cookie': { 
 			'maxAge': 60000 * 30 // idle sessions are good for 30 minutes
 		}

@@ -3,7 +3,6 @@
 // RAX Theme Module - theme.js
 var Theme = module.exports = {},
 	Rax = require('./rax'),
-	Handlebars = require('handlebars'),
 	fs = require('fs'),
 	_ = require('underscore'),
 	loadTheme,
@@ -44,7 +43,7 @@ loadTheme = Theme.loadTheme = function (theme, options) {
 	theme = theme || Rax.cfg.ACTIVE_THEME;
 
 	// get theme config
-	themeCfg = Rax.active.theme = loadCfg();
+	themeCfg = Rax.active.theme = Theme.cfg = loadCfg();
 	themeId = themeCfg.name.toLowerCase();
 
 	if (_.indexOf(listEngines(), themeCfg.engine) === -1) {
@@ -79,10 +78,12 @@ loadTheme = Theme.loadTheme = function (theme, options) {
 	login = fs.readFileSync(Rax.root + '/themes/' + themeId + '/login' + extension, 'utf8');
 	login = Theme.engine.compile(login);
 
+	Rax.log(templates);
+
 	// register all include templates (eg. as Handlebars helpers)
 	_.each(templates, function (template, name) {
 		Rax.logging.g('Registering theme template "' + name + '" (' + template.path + ')');
-		registerInclude(name, templatePath);
+		registerInclude(name, template.path, options);
 	});
 
 	// return compiled templates
@@ -97,43 +98,37 @@ loadTheme = Theme.loadTheme = function (theme, options) {
  *	@alias addGlobal()
  *		Registers a global template
  */
-Theme.registerInclude = registerInclude = function (name, path) {
-	var pieces, parentModule, modulesVars;
+Theme.registerInclude = registerInclude = function (name, path, options) {
+	var pieces, parentModule = false, context, themeCfg = Theme.cfg;
 
-	if (template.path.match(/\/modules\//)) {
-		pieces = template.path.split('/');
+	if (path.match(/\/modules\//)) {
+		pieces = path.split('/');
 		parentModule = pieces[2];
 		moduleTemplate = pieces[(pieces.length - 1)].replace(new RegExp('\\' + Theme.engine.extension), '');
 
 		// ensure module that own's the requested include template is enabled
 		if (Rax.isDef(Rax.modules, [parentModule, 'variables', moduleTemplate])) {
-			moduleVars = Rax.modules[parentModule].variables;
+			context = Rax.modules[parentModule].variables;
 		} else {
-			moduleVars = themeCfg.variables;
+			context = themeCfg.variables;
 		}
 	} else {
-		moduleVars = themeCfg.variables;
+		context = themeCfg.variables;
 	}
 
-	_.extend(moduleVars, options);
+	_.extend(context, options);
 
 	fs.readFile(Rax.root + path, 'utf8', function (err, data) {
-		Theme.engine.register(name, data, moduleVars);
-	});
+		if (!err) {
+			Theme.engine.register({
+				'templateId': name,
+				'isModule': parentModule || false,
+				'template': data,
+				'context': context
+			});
 
-
-	/*
-	 *	if 'templateId' has already been registered in the system,
-	 *	the duplicate will be registered as well and given the prefix
-	 *	of its module or theme (eg. 'foundation_hero' if 'hero' already exists)
-	 */
-	templateId = (typeof Handlebars.helpers[templateId] === 'function') ? dependentId.toLowerCase() + '_' + templateId : templateId;
-
-	Rax.logging.m('++ global: ' + templateId);
-
-	Handlebars.registerHelper(templateId, function () {
-		model = _.extend(model, this);
-		return template(model);
+			Rax.logging.m('++ [' + Theme.cfg.name + '] template include loaded: ' + name);
+		}
 	});
 };
 
