@@ -73,10 +73,9 @@ loadTheme = Theme.loadTheme = function (theme, options) {
 
 	// compile top-level templates (aka pages)
 	index = fs.readFileSync(Rax.root + '/themes/' + themeId + '/index' + extension, 'utf8');
-	index = Theme.engine.compile(index);
-
+	index = Theme.engine.compile(index, 'index');
 	login = fs.readFileSync(Rax.root + '/themes/' + themeId + '/login' + extension, 'utf8');
-	login = Theme.engine.compile(login);
+	login = Theme.engine.compile(login, 'login');
 
 	Rax.log(templates);
 
@@ -94,8 +93,8 @@ loadTheme = Theme.loadTheme = function (theme, options) {
 };
 
 /**
- *	register() 
- *	@alias addGlobal()
+ *	registerInclude() 
+ *	@alias registerInclude()
  *		Registers a global template
  */
 Theme.registerInclude = registerInclude = function (name, path, options) {
