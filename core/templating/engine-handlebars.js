@@ -7,7 +7,7 @@ var Engine = module.exports = {},
 
 Rax.clog('[Initialized templating engine -> Handlebars]');
 
-Engine.extension = ".handlebars"; // file extension this template engine expects
+Engine.extension = '.handlebars'; // file extension this template engine expects
 
 /*
  *	implementation of Engine.compile

@@ -1,8 +1,9 @@
 {
 	"name": "Clearcoat",
 	"author": "mattacular",
-	"description": "Foundation theme (ie. the stock experience) re-written for Dust, still supported by Bootstrap",
+	"description": "Foundation theme (ie. the stock experience) re-written for Dust, still supported by Bootstrap. Note: this theme inherits some assets from Foundation.",
 	"version": "0.0.1",
+	"parent": ["foundation"],
 	"engine": "dust",
 	"templates": {
 		"hero": true,
@@ -13,5 +14,4 @@
 		"raxVersion": "0.0.1",
 		"bootstrapJS": "@parent/assets/js/bootstrap.js"
 	},
-	"parent": ["foundation"]
 }

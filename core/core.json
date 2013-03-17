@@ -6,6 +6,18 @@
 			"required": true
 		},
 		{
+			"name": "Templating Engine (Handlebars)",
+			"path": "templating/engine-handlebars",
+			"description": "Provides engine for compiling and rendering Handlebars JS templates",
+			"required": false
+		},
+		{
+			"name": "Templating Engine (Dust)",
+			"path": "templating/engine-dust",
+			"description": "Provides engine for compiling and rendering Dust JS templates",
+			"required": false
+		},
+		{
 			"name": "Database Driver (MongoDB)",
 			"path": "database/mongo",
 			"description": "Maintains Rax app database and provides API",

@@ -120,6 +120,7 @@ Theme.registerInclude = registerInclude = function (name, path, options) {
 
 	fs.readFile(Rax.root + path, 'utf8', function (err, data) {
 		if (!err) {
+
 			Theme.engine.register({
 				'templateId': name,
 				'isModule': parentModule || false,
