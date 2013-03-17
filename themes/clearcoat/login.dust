@@ -1,0 +1,11 @@
+<div class="pill">
+	<form action="/login" method="post" class="form-inline sans-serif">
+		<input id="return_to" name="return_to" type="hidden" value="/">
+		<input name="user[name]" type="text" class="input-small" placeholder="Username">
+		<input name="user[pass]" type="password" class="input-small" placeholder="Password">
+		<label class="checkbox">
+			<input type="checkbox"> Remember me
+		</label>
+		<button type="submit" class="btn">Sign in</button>
+	</form>
+</div>

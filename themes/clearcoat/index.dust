@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+	<head>
+		{! {>htmlHead/} !}
+	</head>
+	<body>
+		{>contentHead/}
+
+		{>hero/}
+
+		{?user.name}
+			<p style="color: #FFF;">Welcome {user.name}! <a href="/logout" id="signout">Signout</a></p> 
+		{/user.name}
+
+		{>module_template/}
+	</body>
+</html>
