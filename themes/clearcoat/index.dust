@@ -12,6 +12,6 @@
 			<p style="color: #FFF;">Welcome {user.name}! <a href="/logout" id="signout">Signout</a></p> 
 		{/user.name}
 
-		{>module_template/}
+		{@module_template/}
 	</body>
 </html>

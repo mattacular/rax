@@ -115,12 +115,21 @@ loadTheme = Theme.loadTheme = function (theme, options) {
  *		Registers a global template
  */
 Theme.registerInclude = registerInclude = function (name, path, options) {
-	var pieces, parentModule = false, context, themeCfg = Theme.cfg;
+	var pieces, include, parentModule = false, context, themeCfg = Theme.cfg, registerMethod;
 
 	if (path.match(/\/modules\//)) {
 		pieces = path.split('/');
 		parentModule = pieces[2];
 		moduleTemplate = pieces[(pieces.length - 1)].replace(new RegExp('\\' + Theme.engine.extension), '');
+
+		// check to see if this module extension matches the active engine or not
+		pieces = moduleTemplate.split('.');
+		moduleExtension = pieces.pop();
+
+		if (moduleExtension !== Theme.engine.extension) {
+			Rax.clog('diff extension detected! ' + moduleExtension, 'red');
+			registerMethod = 'registerForeign';
+		}
 
 		// ensure module that own's the requested include template is enabled
 		if (Rax.isDef(Rax.modules, [parentModule, 'variables', moduleTemplate])) {
@@ -132,17 +141,24 @@ Theme.registerInclude = registerInclude = function (name, path, options) {
 		context = themeCfg.variables;
 	}
 
+	registerMethod = registerMethod || 'register';
+
 	_.extend(context, options);
 
 	fs.readFile(Rax.root + path, 'utf8', function (err, data) {
 		if (!err) {
-
-			Theme.engine.register({
+			include = {
 				'templateId': name,
 				'isModule': parentModule || false,
 				'template': data,
 				'context': context
-			});
+			};
+
+			if (registerMethod === 'registerForeign') {
+				include.engine = moduleExtension
+			}
+
+			Theme.engine[registerMethod](include);
 
 			Rax.logging.m('++ [' + Theme.cfg.name + '] template include loaded: ' + name);
 		}

@@ -5,6 +5,10 @@ var Engine = module.exports = {},
 	_ = require('underscore'),
 	dust = require('dustjs-linkedin');
 
+if (typeof dust.helpers === 'undefined' || dust.helpers === null) {
+	dust.helpers = {};
+}
+
 Rax.clog('[Initialized templating engine -> Dust]');
 
 Engine.extension = '.dust';
@@ -38,5 +42,18 @@ Engine.register = function (include) {
 	dust.loadSource(dust.compile(include.template, templateId));
 };
 
-Engine.registerForeign = function (foreignEngineId, template) { };
+Engine.registerForeign = function (include) {
+	var foreignEngine = require(Rax.root + '/core/templating/engine-' + include.engine + '.js');
+
+	dust.helpers[include.templateId] = function (chunk, context, bodies, params) {
+		var compiled;
+
+		// @TODO need to require a anonymousRender() method or something that compiles and renders without registration
+		compiled = foreignEngine.compile(include.template);
+
+		chunk.write(compiled(context.stack.head));
+
+		return chunk;
+	};
+};
 
