@@ -11,6 +11,7 @@ var Theme = module.exports = {},
 	loadEngine,
 	getCoreTemplateManifest,
 	engine,
+	resolve,
 	register;
 
 listEngines = Theme.listEngines = function () {
@@ -34,6 +35,17 @@ getCoreTemplateManifest = function () {
 		'contentHead',
 		'htmlHead'
 	]
+};
+
+resolve = function (vars) {
+	_.each(vars, function (val, key) {
+		// @TODO more filters to come ?
+		if (val.indexOf('@parent') !== -1) {
+			vars[key] = val.replace('@parent', '/themes/' + Theme.cfg.parent);
+		}
+	});
+
+	return vars;
 };
 
 loadTheme = Theme.loadTheme = function (theme, options) {
@@ -74,9 +86,14 @@ loadTheme = Theme.loadTheme = function (theme, options) {
 	// compile top-level templates (aka pages)
 	index = fs.readFileSync(Rax.root + '/themes/' + themeId + '/index' + extension, 'utf8');
 	index = Theme.engine.compile(index, 'index');
+
 	login = fs.readFileSync(Rax.root + '/themes/' + themeId + '/login' + extension, 'utf8');
 	login = Theme.engine.compile(login, 'login');
 
+	// resolve variables
+	Theme.cfg.variables = resolve(Theme.cfg.variables);
+
+	Rax.log(Theme.cfg.variables);
 	Rax.log(templates);
 
 	// register all include templates (eg. as Handlebars helpers)
@@ -155,10 +172,18 @@ Theme.render = function (type, options, cb) {
 	var model;
 	type = type || 'index';
 	model = {
+		// some global helpers for writing paths etc
+		'_theme_': '/themes/' + Rax.cfg.ACTIVE_THEME,
+		'_assets_': '/themes/' + Rax.cfg.ACTIVE_THEME + '/assets',
 		'welcome': 'Welcome to RAX!',
 		'user': Rax.active.user,
 		'options': options
 	};
+
+	// setup _parent_ helper in the model?
+	if (Theme.cfg.parent) {
+		model._parent_ = '/themes/' + Theme.cfg.parent;
+	}
 
 	if (typeof Theme.rcache[type] === 'undefined') { //&& Theme.rcache[type].expires > Date.now())
 		Theme.engine.render(type, model, function (err, rendered) {

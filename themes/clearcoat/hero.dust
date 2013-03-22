@@ -1,5 +1,5 @@
 <div class="hero-unit">
-	<h1 class="sans-serif">Welcome to Rax (v{raxVersion})</h1>
+	<h1 class="sans-serif">Welcome to Rax - Clearcoat (v{raxVersion})</h1>
 	<h3><em>The Editorial Engine</em></h3>
 	<p>RAX is a highly modular CMS for Node.js. It is actually more than a CMS, we like to call it an editorial engine because it is powerful enough for professionals and simple enough
 		for bloggers and dilettantes alike.</p>

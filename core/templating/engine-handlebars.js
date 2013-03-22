@@ -8,11 +8,14 @@ var Engine = module.exports = {},
 Rax.clog('[Initialized templating engine -> Handlebars]');
 
 Engine.extension = '.handlebars'; // file extension this template engine expects
+Engine.id = 'handlebars';
 
 /*
  *	implementation of Engine.compile
  */
-Engine.compile = Handlebars.compile;
+Engine.compile = function (raw) {
+	return Handlebars.compile(raw);
+}
 
 Engine.render = function (type, model, cb) {
 	if (typeof Rax.view[type] === 'function') {

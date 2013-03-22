@@ -3,11 +3,11 @@
 	"author": "mattacular",
 	"description": "Foundation theme (ie. the stock experience) re-written for Dust, still supported by Bootstrap. Note: this theme inherits some assets from Foundation.",
 	"version": "0.0.1",
-	"parent": ["foundation"],
+	"parent": "foundation",
 	"engine": "dust",
 	"templates": {
 		"hero": true,
-		"module_template": "/modules/glados/testing.dust",
+		"module_template": "/modules/glados/testing.handlebars",
 		"login": true
 	},
 	"variables": {

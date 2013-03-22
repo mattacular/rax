@@ -109,7 +109,7 @@ function boot(port) {
 	}
 
 	// serve theme's static files
-	Rax.server.use(connect.static(Rax.root + '/themes/' + cfg.ACTIVE_THEME, { maxAge: 1000 }));
+	Rax.server.use(connect.static(Rax.root, { maxAge: 1000 })); // @TODO enforce theme/module asset pathed from Rax CWD root?
 
 	// register other helper middleware
 	Rax.server.use(connect.favicon());	// provide favicon

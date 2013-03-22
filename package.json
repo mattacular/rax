@@ -12,6 +12,9 @@
 	},
 	"author": "Matt Stills <mattacular@gmail.com>",
 	"main": "./core/rax.js",
+	"scripts": {
+		"start": "node server.js"
+	},
 	"directories": {
 		"core": "./core",
 		"conf": "./conf",

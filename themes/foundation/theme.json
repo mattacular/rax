@@ -11,6 +11,6 @@
 	},
 	"variables": {
 		"raxVersion": "0.0.1",
-		"bootstrapJS": "/assets/js/bootstrap.js"
+		"bootstrapJS": "/themes/foundation/assets/js/bootstrap.js"
 	}
 }
