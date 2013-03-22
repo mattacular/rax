@@ -47,3 +47,16 @@ Engine.register = function (include) {
 		return template(model);
 	});
 };
+
+Engine.registerForeign = function (include) {
+	var foreignEngine = require(Rax.root + '/core/templating/engine-' + include.engine + '.js'),
+		model = include.context || {},
+		renderer,
+		runtimeContext = {};
+
+	foreignEngine.quickRender(include, function (err, rendered) {
+		Handlebars.registerHelper(include.templateId, function () {
+			return rendered;
+		});
+	});
+};

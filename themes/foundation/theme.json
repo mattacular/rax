@@ -6,7 +6,7 @@
 	"engine": "handlebars",
 	"templates": {
 		"hero": true,
-		"module_template": "/modules/glados/testing.handlebars",
+		"module_template": "/modules/glados/testing.dust",
 		"login": true
 	},
 	"variables": {

@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		{>htmlHead/}
+		{>htmlHead/} {! regular includes are referenced with '>' !}
 	</head>
 	<body>
 		{>contentHead/}
@@ -12,6 +12,6 @@
 			<p style="color: #FFF;">Welcome {user.name}! <a href="/logout" id="signout">Signout</a></p> 
 		{/user.name}
 
-		{@module_template/}
+		{@module_template/} {! however, 'foreign' or external includes must be referenced with '@' symbol !}
 	</body>
 </html>

@@ -57,3 +57,11 @@ Engine.registerForeign = function (include) {
 	};
 };
 
+Engine.quickRender = function (include, cb) {
+	var tpl = dust.compile(include.template, include.templateId), 
+		output = false;
+
+	dust.loadSource(tpl);
+	dust.render(include.templateId, include.context, cb);
+};
+

@@ -123,7 +123,7 @@ Theme.registerInclude = registerInclude = function (name, path, options) {
 		moduleTemplate = pieces[(pieces.length - 1)].replace(new RegExp('\\' + Theme.engine.extension), '');
 
 		// check to see if this module extension matches the active engine or not
-		pieces = moduleTemplate.split('.');
+		pieces = pieces[3].split('.');
 		moduleExtension = pieces.pop();
 
 		if (moduleExtension !== Theme.engine.extension) {
