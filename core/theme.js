@@ -50,7 +50,7 @@ resolve = function (vars) {
 
 loadTheme = Theme.loadTheme = function (theme, options) {
 	var templates = {},
-		index, themeId, themeCfg, manifest, parentModule, moduleTemplate, moduleVars, pieces, i, login, extension;
+		index, themeId, themeCfg, manifest, parentModule, moduleTemplate, moduleVars, pieces, i, login, extension, signup;
 
 	theme = theme || Rax.cfg.ACTIVE_THEME;
 
@@ -90,6 +90,9 @@ loadTheme = Theme.loadTheme = function (theme, options) {
 	login = fs.readFileSync(Rax.root + '/themes/' + themeId + '/login' + extension, 'utf8');
 	login = Theme.engine.compile(login, 'login');
 
+	signup = fs.readFileSync(Rax.root + '/themes/' + themeId + '/signup' + extension, 'utf8');
+	signup = Theme.engine.compile(signup, 'signup');
+
 	// resolve variables
 	Theme.cfg.variables = resolve(Theme.cfg.variables);
 
@@ -105,7 +108,8 @@ loadTheme = Theme.loadTheme = function (theme, options) {
 	// return compiled templates
 	return {
 		'index': index,
-		'login': login
+		'login': login,
+		'signup': signup
 	};
 };
 

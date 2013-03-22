@@ -24,6 +24,28 @@ User.routes = {
 				res.end();
 			}
 		}
+	},
+	'/signup': {
+		'id': 'user:signup',
+		'get': function (req, res) {
+			if (Rax.active.user && Rax.active.user !== 'anon') {
+				res.writeHead(302, { 'Location': '/' });
+				res.end();
+			} else {
+				res.writeHeader(200, {"Content-Type": "text/html"});
+
+				// Theme.render() is async, regardless of whether the engine supports it
+				Rax.theme.render('signup', {}, function (err, html) {
+					if (!err) {
+						res.write(html);
+					} else {
+						Rax.log(err);
+						res.write('Houston, we have a problem.');
+					}
+					res.end();
+				});
+			}
+		}
 	}
 };
 
