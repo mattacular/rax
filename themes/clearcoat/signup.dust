@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+	<head>
+		{>htmlHead/}
+	</head>
+	<body>
+		{>contentHead/}
+
+		<div class="hero-unit">
+			{! temporary until forms API gets implemented... !}
+			<form id="signup" class="form-horizontal" action="/signup" method="post">
+				<fieldset>
+					<div class="control-group">
+						<div class="controls">
+							<legend>Welcome to Rax!</legend>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="inputEmail">E-mail</label>
+						<div class="controls">
+							<input type="text" id="inputEmail" placeholder="your e-mail address">
+							<span class="help-block">Your e-mail address is your username!</span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="inputPassword">Password</label>
+						<div class="controls">
+							<input type="text" type="password" id="inputPassword" placeholder="password">
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+							<a id="persona-signin" href="#">Sign-in With Persona</a>
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+						<label class="checkbox">
+							<input type="checkbox"> I agree to the site terms & conditions
+						</label>
+						<button type="submit" class="btn">Submit</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		{! Mozilla Persona login available by default !}
+		<script src="https://login.persona.org/include.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				var signinLink, signoutLink;
+
+				navigator.id.watch({
+					loggedInUser: {?user.name}{user.name}{:else}'anonymous'{/user.name},
+					onlogin: function () {},
+					onlogout: function () {}
+				});
+
+				signinLink = document.getElementById('persona-signin');
+
+				if (signinLink) {
+					signinLink.onclick = function() { navigator.id.request(); };
+				}
+				 
+				signoutLink = document.getElementById('persona-signout');
+
+				if (signoutLink) {
+					signoutLink.onclick = function() { navigator.id.logout(); };
+				}
+			});
+		</script>
+	</body>
+</html>
