@@ -29,7 +29,7 @@ Feature Brainstorming/Spec
 	- allows modules to provide forms to templates
 	- utilizes Handlebars helpers (?)
 	- example:
-
+			```javascript
 		    // test form
 			'page' = {
 				'uploadPicture': {
@@ -51,6 +51,7 @@ Feature Brainstorming/Spec
 					}
 				}
 			}
+			```
 
 	- can then be exposed as a global template - {{{form_uploadPicture}}}
 
@@ -164,21 +165,18 @@ Rax automatically manages a link between the active theme's own directory and a 
 	- directs websocket traffic straight to Rax running on Node server (still allows for real-time editing)
 	- all other traffic to Nginx server
 * Nginx
-	- services static requests (via wildcard match) from /www/public_html (for example)
-	- serves theme assets from @ /www/rax/theme/active
+	- services static requests (via wildcard match) from /www/public_html (for example) or by default /www/rax/static
+	- serves core assets from /www/rax/ (or whatever rax wd is)
 	- proxy all other requests to Rax app running on Node server (/)
 * Rax (Node.js)
 	- services all dynamic requests
 
-**LITE-FEATURED** (no websockets/realtime admin interface)
+**LITE-FEATURED** (no Varnish - nginx now supports websockets! hooray)
 * Nginx
-	- services static requests (via wildcard match) from /www/public_html
-	- serves theme assets from symlink @ /www/rax/theme/active
+	- services static requests (via wildcard match) from user-defined directory
+	- serves core assets from /www/rax (or whatever rax wd is)
 	- proxy all other requests to Rax app running on Node server (/)
 * Rax (node.js)
-	- services static requests (via wildcard match) from /www/public_html
-	- serves theme assets from /www/rax/theme/active
-	- proxy all other requests to Rax app running on Node server (/)
 	- services all other dynamic requests
 
 3rd Party Module Spec (Rax Modules)
@@ -188,7 +186,7 @@ it is perfectly easy to run a git clone in your installation's '/modules' direct
 for installing any npm dependencies it utilizes.
 
 For Rax though, 3rd party modules must be identified by a "module.json" file.
-
+	```json
 	{
 		'title': 'Cool Module',
 		'description': 'A cool module',
@@ -198,10 +196,12 @@ For Rax though, 3rd party modules must be identified by a "module.json" file.
 		'author': 'mstills',
 		'src': 'coolModule.js'
 	}
+	```
 
 There are some reserved methods that modules can use to gain exclusive access into the Rax Core that isn't afforded by the Rax object:
 var Rax = require('../core/rax');
 
+	``` javascript
 	// Hook into the router mechanism the same way the core modules do
 	module.exports.routes = {
 		'/coolModule': {
@@ -217,3 +217,4 @@ var Rax = require('../core/rax');
 
 	// Beacons API
 	Rax.on('', function () {});
+	```
