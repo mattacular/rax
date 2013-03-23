@@ -182,11 +182,12 @@ Rax automatically manages a link between the active theme's own directory and a 
 
 #3rd Party Module Spec (Rax Modules)
 ---------------------
-Probably not going to allow install with npm. No need to clog up the npm registry with modules specific to what is technically another module (Rax) when
++ Probably not going to allow install with npm. No need to clog up the npm registry with modules specific to what is technically another module (Rax) when
 it is perfectly easy to run a git clone in your installation's '/modules' directory. Module developers would still be encouraged to supply a 'package.json'
 for installing any npm dependencies it utilizes.
 
-For Rax though, 3rd party modules must be identified by a "module.json" file.
++ For Rax though, 3rd party modules must be identified by a "module.json" file.
+
 	```json
 	{
 		'title': 'Cool Module',
@@ -199,7 +200,7 @@ For Rax though, 3rd party modules must be identified by a "module.json" file.
 	}
 	```
 
-There are some reserved methods that modules can use to gain exclusive access into the Rax Core that isn't afforded by the Rax object:
++ There are some reserved methods that modules can use to gain exclusive access into the Rax Core that isn't afforded by the Rax object:
 var Rax = require('../core/rax');
 
 	```javascript
