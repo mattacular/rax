@@ -155,30 +155,30 @@ https://trello.com/board/node-cms/50c363b1a538d8062a002368
 	- Build systems?
 	- Pre-compilation of templates
 
-Recommended Server Setups
+# Recommended Server Setups
 -------------------------
 Node is unique in that it is its own webserver. It can serve static files and requests all by itself! However, certain size sites may benefit from alternate setups.
 Rax automatically manages a link between the active theme's own directory and a generic directory - /rax/theme/active (the symlink itself) so that you can setup Nginx to serve the theme's static files as well! Of course, Node will be packaged with examples configs for all the parts of the stack. For taking full advantage of Rax's functionality AND retaining full control over performance aspects w/avenues for effective scalability here is the recommended stack:
 
-**FULL-FEATURED**
-* Varnish
-	- cache layer
-	- directs websocket traffic straight to Rax running on Node server (still allows for real-time editing)
-	- all other traffic to Nginx server
-* Nginx
-	- services static requests (via wildcard match) from /www/public_html (for example) or by default /www/rax/static
-	- serves core assets from /www/rax/ (or whatever rax wd is)
-	- proxy all other requests to Rax app running on Node server (/)
-* Rax (Node.js)
-	- services all dynamic requests
+- **FULL-FEATURED**
+	+ Varnish
+		- cache layer
+		- directs websocket traffic straight to Rax running on Node server (still allows for real-time editing)
+		- all other traffic to Nginx server
+	+ Nginx
+		- services static requests (via wildcard match) from /www/public_html (for example) or by default /www/rax/static
+		- serves core assets from /www/rax/ (or whatever rax wd is)
+		- proxy all other requests to Rax app running on Node server (/)
+	+ Rax (Node.js)
+		- services all dynamic requests
 
-**LITE-FEATURED** (no Varnish - nginx now supports websockets! hooray)
-* Nginx
-	- services static requests (via wildcard match) from user-defined directory
-	- serves core assets from /www/rax (or whatever rax wd is)
-	- proxy all other requests to Rax app running on Node server (/)
-* Rax (node.js)
-	- services all other dynamic requests
+- **LITE-FEATURED** (no Varnish - nginx now supports websockets! hooray)
+	+ Nginx
+		- services static requests (via wildcard match) from user-defined directory
+		- serves core assets from /www/rax (or whatever rax wd is)
+		- proxy all other requests to Rax app running on Node server (/)
+	+ Rax (node.js)
+		- services all other dynamic requests
 
 #3rd Party Module Spec (Rax Modules)
 ---------------------
