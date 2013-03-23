@@ -190,13 +190,13 @@ for installing any npm dependencies it utilizes.
 
 	```json
 	{
-		'title': 'Cool Module',
-		'description': 'A cool module',
-		'git': 'https://...'    // please host your modules on github so they can be updated through the admin interface!
-		'version': '0.0.1'
-		'requires': '>3.0',
-		'author': 'mstills',
-		'src': 'coolModule.js'
+		"title": "Cool Module",
+		"description": "A cool module",
+		"git": "https://..."
+		"version": "0.0.1"
+		"requires": ">3.0",
+		"author": "mstills",
+		"src": "coolModule.js"
 	}
 	```
 
