@@ -217,6 +217,21 @@ Theme.render = function (type, options, cb) {
 			}
 		});
 	} else {
+		Rax.clog('USING RENDER CACHE TO PULL ' + type, 'red');
 		cb(null, Theme.rcache[type]);
+	}
+};
+
+// flush render cache ( @TODO need to make the cache more piecemeal because the top level pages will need to be fully re-rendered all the time otherwise)
+Theme.flush = function (type) {
+	type = type || false;
+
+	if (type && typeof Theme.rcache[type] !== 'undefined') {
+		// just delete the requested type
+		delete Theme.rcache[type];
+	} else {
+		// reset entire render cache
+		delete Theme.rcache;
+		Theme.rcache = {};
 	}
 };

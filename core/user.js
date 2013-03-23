@@ -15,6 +15,9 @@ User.routes = {
 			if (Rax.active.user && Rax.active.user !== 'anon') {
 				Rax.log('logging out', Rax.active.user);
 
+				// a user logged out... flush the render cache for the page we're sending them to?
+				Rax.theme.flush('index');
+
 				req.session.destroy(function () {
 					res.writeHead(302, { 'Location': '/' });
 					res.end();

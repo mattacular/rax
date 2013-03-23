@@ -68,6 +68,8 @@ routes = function () {
 
 							return Rax.toolkit.redirect();
 						} else {
+							Rax.theme.flush('index'); // a user logged in... redraw pages?
+
 							req.session.user = user.name;
 
 							if (typeof req.body.user.persist === 'string' && req.body.user.persist === 'on') {
