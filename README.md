@@ -180,7 +180,7 @@ Rax automatically manages a link between the active theme's own directory and a 
 * Rax (node.js)
 	- services all other dynamic requests
 
-3rd Party Module Spec (Rax Modules)
+#3rd Party Module Spec (Rax Modules)
 ---------------------
 Probably not going to allow install with npm. No need to clog up the npm registry with modules specific to what is technically another module (Rax) when
 it is perfectly easy to run a git clone in your installation's '/modules' directory. Module developers would still be encouraged to supply a 'package.json'
@@ -219,3 +219,4 @@ var Rax = require('../core/rax');
 	// Beacons API
 	Rax.on('', function () {});
 	```
+
