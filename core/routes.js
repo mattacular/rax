@@ -37,7 +37,7 @@ routes = function () {
 		res.writeHeader(200, {"Content-Type": "text/html"});
 
 		// Theme.render() is async, regardless of whether the engine supports it
-		Rax.theme.render('index', { 'showLogin': (Rax.active.user === 'anon') }, function (err, html) {
+		Rax.theme.render('index', { 'showLogin': (Rax.active.user === 'anon'), 'route': '/' }, function (err, html) {
 			if (!err) {
 				res.write(html);
 			} else {
@@ -145,6 +145,8 @@ enableRoutes = function (routes) {
 
 		// validate the actions map
 		Object.keys(actions).forEach(function (key) {
+			key = key.toLowerCase();
+
 			if (!validate(key)) {
 				reject = true;
 			}

@@ -35,7 +35,7 @@ User.routes = {
 				res.writeHeader(200, {"Content-Type": "text/html"});
 
 				// Theme.render() is async, regardless of whether the engine supports it
-				Rax.theme.render('signup', {}, function (err, html) {
+				Rax.theme.render('signup', { 'route': '/signup' }, function (err, html) {
 					if (!err) {
 						res.write(html);
 					} else {
