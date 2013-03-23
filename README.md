@@ -1,6 +1,6 @@
-RAX ALPHA - (CURRENTLY IN DEVELOPMENT)
+# RAX ALPHA - (CURRENTLY IN DEVELOPMENT)
 ======================================
-CMS for Node.js
+# CMS for Node.js
 ==========================================
 
 Want to help develop this project? Read about it below and if you think you're still interested, [e-mail me](mailto:mattacular@gmail.com)!
@@ -29,29 +29,29 @@ Feature Brainstorming/Spec
 	- allows modules to provide forms to templates
 	- utilizes Handlebars helpers (?)
 	- example:
-			```javascript
-		    // test form
-			'page' = {
-				'uploadPicture': {
-					'prefix': '<div class="site-upload-picture-form">',
-					'suffix': '</div>',
-					'submit': '/photos/upload'	// takes a route or routeId
-					'structure': {
-						'picture_description': {
-							'type': 'textfield',
-							'title': 'Description',
-							'weight': 0,
-							'prefix': '',
-							'suffix': ''
-						}
-					},
-					'handlers': {
-						'validation': function () {},	// validation handler
-						'submit': function () {}		// submission handlers (override route handler?)
-					}
+	```javascript
+	// test form
+	'page' = {
+		'uploadPicture': {
+			'prefix': '<div class="site-upload-picture-form">',
+			'suffix': '</div>',
+			'submit': '/photos/upload'	// takes a route or routeId
+			'structure': {
+				'picture_description': {
+					'type': 'textfield',
+					'title': 'Description',
+					'weight': 0,
+					'prefix': '',
+					'suffix': ''
 				}
+			},
+			'handlers': {
+				'validation': function () {},	// validation handler
+				'submit': function () {}		// submission handlers (override route handler?)
 			}
-			```
+		}
+	}
+	```
 
 	- can then be exposed as a global template - {{{form_uploadPicture}}}
 
@@ -201,7 +201,7 @@ For Rax though, 3rd party modules must be identified by a "module.json" file.
 There are some reserved methods that modules can use to gain exclusive access into the Rax Core that isn't afforded by the Rax object:
 var Rax = require('../core/rax');
 
-	``` javascript
+	```javascript
 	// Hook into the router mechanism the same way the core modules do
 	module.exports.routes = {
 		'/coolModule': {
