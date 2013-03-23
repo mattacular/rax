@@ -80,30 +80,32 @@ function init() {
 }
 
 function boot(port) {
-	var sessionStore;	// will hold instance of the DB session storage class
+	var sessionStore;		// will hold instance of the DB session storage class
 
-	loadCore();			// load enabled core modules that are not deferred
-	Rax.emit('coreLoaded');
+	loadCore();				// load enabled core modules that are not deferred
+	Rax.emit('coreLoaded'); // the earliest signal that modules can react to
 
 	// shortcuts for boot messaging
 	info = Rax.logging.info;
 	warn = Rax.logging.warn;
 	error = Rax.logging.error;
+
+	// begin the boot process
 	Rax.log(('[Rax] Core modules loaded').cyan);
 	Rax.log(('[Rax] Booting...').cyan);
 
-	info('Loading addon modules...');
-	loadAddons();	// load enabled addon modules that are not deferred
+	info('Loading addon modules (not deferred)...');
+	loadAddons();
+
 	Rax.emit('addonsLoaded');
 
-	// begin server
+	// spin up the server
 	info('Starting server...');
 	Rax.server = connect.createServer();
 
-	// connect middleware
+	// connect various middleware
 	// check: use static file server?
 	if (cfg.USE_STATIC_FILESERVER) {
-		// @TODO allow usage of built-in static fileserver
 		info('Enabling static server @ ' + Rax.root + '/static');
 		Rax.server.use(connect.static(Rax.root + '/static'));
 	}

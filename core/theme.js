@@ -205,7 +205,7 @@ Theme.render = function (type, options, cb) {
 		model._parent_ = '/themes/' + Theme.cfg.parent;
 	}
 
-	if (typeof Theme.rcache[type] === 'undefined') { //&& Theme.rcache[type].expires > Date.now())
+	// if (typeof Theme.rcache[type] === 'undefined') { //&& Theme.rcache[type].expires > Date.now())
 		Theme.engine.render(type, model, function (err, rendered) {
 			if (!err) {
 				// cache the rendered page
@@ -216,10 +216,10 @@ Theme.render = function (type, options, cb) {
 				cb(err, null);
 			}
 		});
-	} else {
-		Rax.clog('USING RENDER CACHE TO PULL ' + type, 'red');
-		cb(null, Theme.rcache[type]);
-	}
+	// } else {
+	// 	Rax.clog('USING RENDER CACHE TO PULL ' + type, 'red');
+	// 	cb(null, Theme.rcache[type]);
+	// }
 };
 
 // flush render cache ( @TODO need to make the cache more piecemeal because the top level pages will need to be fully re-rendered all the time otherwise)
