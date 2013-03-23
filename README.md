@@ -192,8 +192,8 @@ for installing any npm dependencies it utilizes.
 	{
 		"title": "Cool Module",
 		"description": "A cool module",
-		"git": "https://..."
-		"version": "0.0.1"
+		"git": "https://...",
+		"version": "0.0.1",
 		"requires": ">3.0",
 		"author": "mstills",
 		"src": "coolModule.js"
