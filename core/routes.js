@@ -81,14 +81,21 @@ routes = function () {
 										req.session.save(cb)
 									},
 									function (cb) {
-										Rax.user.model.update({ 'name': req.body.user.name }, { 'session_id': req.sessionID }, cb);
+										Rax.user.model.update({ 'name': req.body.user.name }, { 'session_id': req.sessionID, 'last_access': ( new Date() ) }, cb);
 									}
 								], function () {
 									// after save is complete, redirect to index
 									Rax.toolkit.redirect();
 								});
 							} else {
-								req.session.save(function () {
+								Rax.async.parallel([
+									function (cb) {
+										req.session.save(cb)
+									},
+									function (cb) {
+										Rax.user.model.update({ 'name': req.body.user.name }, { 'last_access': ( new Date() ) }, cb);
+									}
+								], function () {
 									Rax.toolkit.redirect();
 								});
 							}

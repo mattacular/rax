@@ -28,6 +28,27 @@ User.routes = {
 			}
 		}
 	},
+	'/json/me': {
+		'id': 'user:api:getActive',
+		'get': function (req, res) {
+			res.writeHead(200, { 
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*'
+			});
+
+			if (Rax.active.user !== 'anon') {
+				res.write(JSON.stringify({
+					'_id': Rax.active.user._id,
+					'last_access': Rax.active.user.last_access,
+					'mail': Rax.active.user.mail,
+					'name': Rax.active.user.name
+				}));
+			} else {
+				res.write(JSON.stringify({ 'error': { 'status': 'You must be logged in to use this API call.', 'code': 0 } }));
+			}
+			res.end();
+		}
+	},
 	'/signup': {
 		'id': 'user:signup',
 		'get': function (req, res) {
@@ -35,7 +56,7 @@ User.routes = {
 				res.writeHead(302, { 'Location': '/' });
 				res.end();
 			} else {
-				res.writeHeader(200, {"Content-Type": "text/html"});
+				res.writeHead(200, {"Content-Type": "text/html"});
 
 				// Theme.render() is async, regardless of whether the engine supports it
 				Rax.theme.render('signup', { 'route': '/signup' }, function (err, html) {
