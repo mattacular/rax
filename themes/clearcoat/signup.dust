@@ -18,14 +18,14 @@
 					<div class="control-group">
 						<label class="control-label" for="inputEmail">E-mail</label>
 						<div class="controls">
-							<input type="text" id="inputEmail" placeholder="your e-mail address">
+							<input type="text" name="newUser[email]" id="inputEmail" placeholder="your e-mail address">
 							<span class="help-block">Your e-mail address is your username!</span>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="inputPassword">Password</label>
 						<div class="controls">
-							<input type="password" id="inputPassword" placeholder="password">
+							<input type="password" name="newUser[password]" id="inputPassword" placeholder="password">
 						</div>
 					</div>
 					<div class="control-group">
@@ -36,7 +36,7 @@
 					<div class="control-group">
 						<div class="controls">
 						<label class="checkbox">
-							<input type="checkbox"> I agree to the site terms & conditions
+							<input type="checkbox" name="newUser[acceptTerms]"> I agree to the site terms & conditions
 						</label>
 						<button type="submit" class="btn">Submit</button>
 						</div>

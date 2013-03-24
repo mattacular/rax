@@ -48,6 +48,30 @@ User.routes = {
 					res.end();
 				});
 			}
+		},
+		'post': function (req, res) {
+			var body = req.body;
+
+			// @TODO what validation?
+			if (body.newUser.acceptTerms && 
+				body.newUser.acceptTerms === 'on' &&
+				body.newUser.email && body.newUser.password) {
+
+				newUser = User.model.create({
+					'name': body.newUser.email,
+					'pass': body.newUser.password,
+					'mail': body.newUser.email,
+					'last_access': ( new Date() )
+				}, function (err, newb) {
+					if (!err) {
+						res.writeHead(302, { 'Location': '/' });
+					} else {
+						res.writeHead(302, { 'Location': '/signup' });
+					}
+
+					res.end();
+				});
+			}
 		}
 	}
 };
@@ -101,7 +125,7 @@ Rax.on('coreLoaded', function () {
 		var user = this;
 
 		// only hash the password if it has been modified (or is new)
-		if (!user.isModified('password')) {
+		if (!user.isModified('pass')) {
 			return next();
 		}
 
@@ -112,13 +136,13 @@ Rax.on('coreLoaded', function () {
 			}
 
 			// hash the password using our new salt
-			bcrypt.hash(user.password, salt, function(err, hash) {
+			bcrypt.hash(user.pass, salt, function (err, hash) {
 				if (err) {
 					return next(err);
 				}
 
 				// override the cleartext password with the hashed one
-				user.password = hash;
+				user.pass = hash;
 				next();
 			});
 		});
